@@ -1,0 +1,23 @@
+**********************************************************************
+* Nom du cours : Mathématiques spécifiques II (Algorithmes numériques)
+* Contexte : Labo1
+* Date : 03.03.2022
+*
+* Équipe : 
+* 	- Nicloas Aubert
+*	- Lucas Gosteli
+*	- Vincent Jeannin
+* 	- Théo Vuilliomenet
+**********************************************************************
+
+Contexte
+========
+
+Méthodes
+========
+
+Conclusion
+==========
+
+Références
+==========

@@ -1,6 +1,6 @@
-# AlgoNum
+# Laboratoires AlgoNum groupe 4
 
-Ici sont stockés nos différents laboratoires du cours Mathématiques spécifiques II (Algorithme numérique).
+Ici sont stockés nos différents laboratoires du cours Mathématiques spécifiques II (Algorithmes numériques).
 
 Composition du groupe :
 
@@ -9,4 +9,4 @@ Composition du groupe :
 - Gosteli Lucas
 - Vuilliomenet Théo
 
-Mars 2022
+HE-Arc Mars 2022
