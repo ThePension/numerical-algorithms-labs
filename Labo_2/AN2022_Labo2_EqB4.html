@@ -19,7 +19,14 @@
     <hr>
 
     <canvas id="canvas" height="500" width="500">
-    </canvas>   
+    </canvas>
+
+    <br>
+    <label>Borne min : </label>
+    <input type="number" max="-10" min="-100" value="-5" step="1" id="borneMin" onchange="setup()">
+    
+    <label>Borne max : </label>
+    <input type="number" min="10" max="100" value="5" step="1" id="borneMax" onchange="setup()">
 
     <br>
 

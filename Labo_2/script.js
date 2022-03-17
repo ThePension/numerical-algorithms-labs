@@ -1,14 +1,33 @@
 function setup() {
-    
     const canvas = document.querySelector('#canvas');
-    drawFunctionOnCanvas(canvas, -50, 50, 'blue', f1);
 
+    let borneMin = parseInt($("borneMin").value);
+    let borneMax = parseInt($("borneMax").value);
+
+    let phi = 2;
+
+    unitInPixels = canvas.width / (borneMax - borneMin);
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+    drawAxis(canvas, unitInPixels); // Draw the axis
+
+    ctx.setTransform(1, 0, 0, -1, 0, canvas.height); // FLIP ON Y AXIS
+
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f1);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
+
+    drawFindRacines(canvas, borneMin, borneMax, 'pink', f1);
 }
 
 function drawAxis(canvas, unitInPixels = 1){
     if (!canvas.getContext) { return; }
 
     const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
 
     ctx.beginPath();
     let w = canvas.width;
@@ -46,20 +65,12 @@ function drawAxis(canvas, unitInPixels = 1){
 }
 
 function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
-    if (!canvas.getContext) {
-        return;
-    }
-
     unitInPixels = canvas.width / (borneMax - borneMin);
-
-    drawAxis(canvas, unitInPixels);
 
     borneMin *= unitInPixels;
     borneMax *= unitInPixels;
 
     const ctx = canvas.getContext('2d');
-
-    ctx.setTransform(1, 0, 0, -1, 0, canvas.height); // FLIP ON Y AXIS
 
     let decX = canvas.width / 2;
     let decY = canvas.height / 2;
@@ -68,12 +79,10 @@ function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
     ctx.lineWidth = 1;
 
     let oldX = borneMin;
-    let oldY = f(oldX);
+    let oldY = f(oldX / unitInPixels) * unitInPixels;
 
     for(let x = borneMin; x < borneMax; x += 1){
-        
         let y = f(x / unitInPixels) * unitInPixels;
-        console.log("X : " + x + " ; Y : " + y);
         ctx.beginPath();
         ctx.moveTo(oldX + decX, oldY + decY);
         ctx.lineTo(x + decX, y + decY);
@@ -83,22 +92,68 @@ function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
     }
 }
 
-function g(f, x){
-    return x + f(x);
+function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
+    unitInPixels = canvas.width / (borneMax - borneMin);
+
+    borneMin *= unitInPixels;
+    borneMax *= unitInPixels;
+
+    const ctx = canvas.getContext('2d');
+
+    let decX = canvas.width / 2;
+    let decY = canvas.height / 2;
+    // set line stroke and line width
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1;
+
+    let oldX = borneMin;
+    let oldY = f(borneMin);
+
+    let x = borneMin + 1;
+    while(x < borneMax){
+        // F(X)
+        let y = g(x / unitInPixels) * unitInPixels;
+        ctx.beginPath();
+        ctx.moveTo(oldX + decX, oldY + decY);
+        ctx.lineTo(x + decX, y + decY);
+        ctx.stroke();
+        oldX = x;
+        oldY = y;
+
+        // G(X)
+        y = fPlusG(x / unitInPixels) * unitInPixels;
+        ctx.beginPath();
+        ctx.moveTo(oldX + decX, oldY + decY);
+        ctx.lineTo(x + decX, y + decY);
+        ctx.stroke();
+        oldX = x;
+        oldY = y;
+
+        x = y;
+        if(Math.abs(oldX - x) < 0.00001) { 
+            console.log("Racine : " + x / unitInPixels);
+            return;
+        }
+    }
+}
+
+function fPlusG(x){
+    return f1(x) + g(x);
+}
+
+function g(x){
+    return x;
 }
 
 function f1(x){
     return Math.sin(x) - (x/13);
 }
 
-function f3(x)
-{
-    if(x % 2 == 0) return x;
-    else return -x;
-}
-
-function f2(x) { return x; }
-
+/**
+ * 
+ * @param {Float} deg The value in degrees 
+ * @returns {Float} The value in radians
+ */
 function degToRad(deg) {
     return (deg * Math.PI) / 180;
 }
