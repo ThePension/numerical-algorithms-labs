@@ -8,8 +8,8 @@ function submit_process() {
     const float_number = encode_to_float(target, nbBits);
     const float_code = decode_to_float(float_number);
 
-    console.log(`Encode : ${float_number}`);
-    console.log(`Decode ; ${float_code}`);
+    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
+    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
 }
 
 function encode_to_float(target, nbBits) {
