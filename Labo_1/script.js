@@ -1,9 +1,15 @@
+/**
+ * @brief Process the user input and then encode, decode and display the number
+ */
 function submit_process() {
     const target = parseFloat($("target_value").value);
     const nbBits = parseInt($("b_value").value);
 
     if (isNaN(target) || isNaN(nbBits))
         return window.alert("Veuillez entrer des nombres");
+
+    if (nbBits < 7 || nbBits > 256)
+        return window.alert("Le nombre de bits doit être entre 7 et 256");
 
     const float_number = encode_to_float(target, nbBits);
     const float_code = decode_to_float(float_number);
@@ -12,6 +18,13 @@ function submit_process() {
     $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
 }
 
+/**
+ * @brief Encode a number to binary array
+ * 
+ * @param {Number} target The number to encode
+ * @param {Number} nbBits Length of the binary array
+ * @returns {Array<Number>} Binary array
+ */
 function encode_to_float(target, nbBits) {
     const sign = target < 0 ? 1 : 0;
     const e = Math.ceil(Math.log2(Math.abs(target)));
@@ -40,17 +53,18 @@ function encode_to_float(target, nbBits) {
 }
 
 /**
+ * @brief Decode the binary code to a number
  * 
  * @param {Array<Number>} float_number The array with the binary code
- * @returns {String}
+ * @returns {Number}
  */
 function decode_to_float(float_number) {
     const length = float_number.length;
     const exponent_length = exponent_size(length);
     const mantisse_length = length - 1 - exponent_length;
     const d = Math.pow(2, exponent_length-1) - 2;
-    
     const sign = float_number[0];
+
     let e = [];
     let mantisse = [];
 
@@ -62,14 +76,8 @@ function decode_to_float(float_number) {
         mantisse.push(float_number[k]);
     }
 
-    let exponent = binaryToInt(e);
-    exponent -= d;
-
-    console.log(exponent);
-
+    const exponent = binaryToInt(e) - d;
     let float_code = Math.pow(2, exponent);
-
-    console.log(float_code);
 
     let m = 0.5;
     for (let k = 0; k < mantisse_length; k++) {
@@ -88,6 +96,7 @@ function decode_to_float(float_number) {
 
 /**
  * @brief Transforms an Integer to a Binary array
+ * 
  * @param {Number} int An integer
  * @param {Number} length The length of the binary code
  * @returns {Array<Number>} Binary array
@@ -111,6 +120,7 @@ function intToBinary(int, length) {
 
 /**
  * @brief Transforms a binary array to an Integer
+ * 
  * @param {Array<Number>} binary The binary array
  * @returns {Number} The Integer
  */
@@ -127,7 +137,8 @@ function intToBinary(int, length) {
 }
 
 /**
- * Gets an HTML element by its ID
+ * @brief Gets an HTML element by its ID
+ * 
  * @param {String} id The id
  * @returns {HTMLElement} The element
  */
@@ -135,6 +146,12 @@ function $(id) {
     return document.getElementById(id);
 }
 
+/**
+ * @brief Returns the length of the exponent part
+ * 
+ * @param {Number} size The number of bits for the binary code
+ * @returns {Number}
+ */
 function exponent_size(size) {
     if (size < 12) {
         return 5;

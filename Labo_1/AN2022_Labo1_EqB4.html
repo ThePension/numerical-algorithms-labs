@@ -17,9 +17,16 @@
     </ul>
     <p>Date : 07.03.2022</p>
     <hr>
+    <p>
+        Le but de cette application est d'encoder et de décoder des nombres à virgule.<br>
+        La particularité de notre encodage est que le nombre de bits puisse être fourni par l'utilisateur.<br>
+        <br>
+        Cependant, nous sommes tout de même obligé de fixer un nombre de bits minimum pour être capable d'encoder les nombres.<br>
+    </p>
+    <hr>
 
-    <label for="b_value">Entrez b : </label>
-    <input id="b_value" name="b_value" required>
+    <label for="b_value">Entrez le nombre de bits pour l'encodage [7;256] : </label>
+    <input id="b_value" name="b_value" type="number" min="7" max="256" required>
 
     <br>
 
@@ -31,8 +38,7 @@
     <button onclick="submit_process()">Submit</button>
 
     <hr>
-
+    Résultat : <br><br>
     <div id="binary_code"></div>
-    <br>
     <div id="binary_decode"></div>
 </body>
