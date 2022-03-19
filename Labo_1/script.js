@@ -26,8 +26,14 @@ function submit_process() {
  * @returns {Array<Number>} Binary array
  */
 function encode_to_float(target, nbBits) {
+    if (target == 0) {
+        return Array(nbBits).fill(0);
+    }
+
+    const target_abs = Math.abs(target);
+
     const sign = target < 0 ? 1 : 0;
-    const e = Math.ceil(Math.log2(Math.abs(target)));
+    const e = Math.ceil(Math.log2(target_abs));
     const e_length = exponent_size(nbBits);
     const d = Math.pow(2, e_length - 1) - 2;
     const exponent_value = e + d;
@@ -40,7 +46,7 @@ function encode_to_float(target, nbBits) {
     for (let k = 0; k < n; k++) {
         const divider = 4 * Math.pow(2, k);
 
-        if ((M + 1 / divider) * base <= target) {
+        if ((M + 1 / divider) * base <= target_abs) {
             M += 1 / divider;
             mantis_array.push(1);
         }
@@ -62,17 +68,17 @@ function decode_to_float(float_number) {
     const length = float_number.length;
     const exponent_length = exponent_size(length);
     const mantisse_length = length - 1 - exponent_length;
-    const d = Math.pow(2, exponent_length-1) - 2;
+    const d = Math.pow(2, exponent_length - 1) - 2;
     const sign = float_number[0];
 
     let e = [];
     let mantisse = [];
 
-    for (let k = 1; k < exponent_length+1; k++) {
+    for (let k = 1; k < exponent_length + 1; k++) {
         e.push(float_number[k]);
     }
 
-    for (let k = exponent_length+1; k < length; k++) {
+    for (let k = exponent_length + 1; k < length; k++) {
         mantisse.push(float_number[k]);
     }
 
@@ -83,14 +89,13 @@ function decode_to_float(float_number) {
     for (let k = 0; k < mantisse_length; k++) {
         const divider = 4 * Math.pow(2, k);
 
-        if(mantisse[k] == 1)
-        {
-            m += 1/divider;
+        if (mantisse[k] == 1) {
+            m += 1 / divider;
         }
     }
 
-    float_code *= m * ((-2*sign) + 1);
-    
+    float_code *= m * ((-2 * sign) + 1);
+
     return float_code;
 }
 
@@ -124,7 +129,7 @@ function intToBinary(int, length) {
  * @param {Array<Number>} binary The binary array
  * @returns {Number} The Integer
  */
- function binaryToInt(binary) {
+function binaryToInt(binary) {
     let int = 0;
 
     const array = binary.reverse();
