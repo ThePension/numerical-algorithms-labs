@@ -1,6 +1,6 @@
 function exponent_size(size) {
-    if (size < 9) {
-        return 2;
+    if (size < 12) {
+        return 5;
     }
     else if (size < 128) {
         //estimation de la fonction suivant "IEEE std 754-2008", formule wolframealpha : quadratic fit {(16;5),(32;8),(64;11),(128;15)}, R_2 0.994108
