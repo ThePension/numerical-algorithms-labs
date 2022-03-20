@@ -1,10 +1,12 @@
-function setup() {
+async function setup() {
+    sleep = ms => new Promise(r => setTimeout(r, ms));
+
     const canvas = document.querySelector('#canvas');
 
     let borneMin = parseInt($("borneMin").value);
     let borneMax = parseInt($("borneMax").value);
 
-    let phi = 2;
+    phi = parseInt($("phi").value);
 
     unitInPixels = canvas.width / (borneMax - borneMin);
 
@@ -15,11 +17,11 @@ function setup() {
 
     ctx.setTransform(1, 0, 0, -1, 0, canvas.height); // FLIP ON Y AXIS
 
-    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f1);
-    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
-    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
+    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f1);
+    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
+    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
 
-    drawFindRacines(canvas, borneMin, borneMax, 'pink', f1);
+    await drawFindRacines(canvas, borneMin, borneMax, 'pink', f1);
 }
 
 function drawAxis(canvas, unitInPixels = 1){
@@ -64,7 +66,7 @@ function drawAxis(canvas, unitInPixels = 1){
     ctx.stroke();
 }
 
-function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
+async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -89,10 +91,11 @@ function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
         ctx.stroke();
         oldX = x;
         oldY = y;
+        // await sleep(0.01);
     }
 }
 
-function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
+async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -107,38 +110,117 @@ function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
     ctx.lineWidth = 1;
 
     let oldX = borneMin;
-    let oldY = f(borneMin);
-
+    let oldY = fPlusG(borneMin);
+    let count = 0;
     let x = borneMin + 1;
+    let y = 0;
     while(x < borneMax){
-        // F(X)
-        let y = g(x / unitInPixels) * unitInPixels;
-        ctx.beginPath();
-        ctx.moveTo(oldX + decX, oldY + decY);
-        ctx.lineTo(x + decX, y + decY);
-        ctx.stroke();
-        oldX = x;
-        oldY = y;
+        // console.log("fPlusG("+x/ unitInPixels+") = " + fPlusG(x/ unitInPixels));
+        // console.log("g("+x/ unitInPixels+") = " + g(x/ unitInPixels));
+        if(fPlusG(x / unitInPixels) > g(x / unitInPixels)){
+            // console.log("Au-dessus");
+            ctx.strokeStyle = 'pink';
+            // F(X)
+            y = g(x / unitInPixels) * unitInPixels;
+            ctx.beginPath();
+            ctx.moveTo(oldX + decX, oldY + decY);
+            ctx.lineTo(x + decX, y + decY);
+            ctx.stroke();
+            oldX = x;
+            oldY = y;
 
-        // G(X)
-        y = fPlusG(x / unitInPixels) * unitInPixels;
-        ctx.beginPath();
-        ctx.moveTo(oldX + decX, oldY + decY);
-        ctx.lineTo(x + decX, y + decY);
-        ctx.stroke();
-        oldX = x;
-        oldY = y;
+            await sleep(100);
 
-        x = y;
-        if(Math.abs(oldX - x) < 0.00001) { 
-            console.log("Racine : " + x / unitInPixels);
-            return;
+            // G(X)
+            y = fPlusG(x / unitInPixels) * unitInPixels;
+            ctx.beginPath();
+            ctx.moveTo(oldX + decX, oldY + decY);
+            ctx.lineTo(x + decX, y + decY);
+            ctx.stroke();
+            oldX = x;
+            oldY = y;
+            count++;
+
+            x = g(x / unitInPixels) * unitInPixels;
+            x = y;
+            if(Math.abs(oldX - x) < 0.00001) {
+                ctx.strokeStyle = 'cyan';
+                ctx.beginPath();
+                ctx.moveTo(oldX + decX, y + decY);
+                ctx.lineTo(oldX + decX, decY);
+                ctx.stroke();
+                console.log("Racine : " + x / unitInPixels);
+                x += unitInPixels;
+            }
+            
+            await sleep(100);
         }
+        else
+        {
+           x += unitInPixels;
+           oldX = x;
+           y = fPlusG(x / unitInPixels) * unitInPixels;
+           oldY = y;
+        }  
+
+        if(count > 1000) {
+            console.log("Counter max reached");
+            return;
+        }   
+    }
+
+    oldX = borneMax;
+    oldY = fPlusG(borneMax);
+    count = 0;
+    x = borneMax - 1;
+    y = 0;
+    while(x > borneMin){
+        if(g(x / unitInPixels) > fPlusG(x / unitInPixels)){
+            console.log("test");
+            // console.log("Au-dessus");
+            ctx.strokeStyle = 'orange';
+            // F(X)
+            y = g(x / unitInPixels) * unitInPixels;
+            ctx.beginPath();
+            ctx.moveTo(oldX + decX, oldY + decY);
+            ctx.lineTo(x + decX, y + decY);
+            ctx.stroke();
+            oldX = x;
+            oldY = y;
+
+            await sleep(100);
+
+            // G(X)
+            y = fPlusG(x / unitInPixels) * unitInPixels;
+            ctx.beginPath();
+            ctx.moveTo(oldX + decX, oldY + decY);
+            ctx.lineTo(x + decX, y + decY);
+            ctx.stroke();
+            oldX = x;
+            oldY = y;
+            count++;
+
+            x = g(x / unitInPixels) * unitInPixels;
+            x = y;
+            if(Math.abs(oldX - x) < 0.00001) {
+                ctx.strokeStyle = 'cyan';
+                ctx.beginPath();
+                ctx.moveTo(oldX + decX, y + decY);
+                ctx.lineTo(oldX + decX, decY);
+                ctx.stroke();
+                console.log("Racine : " + x / unitInPixels);
+                x -= unitInPixels;
+            }
+            
+            await sleep(100);
+        }
+        count++;
+        if(count > 1000) return;
     }
 }
 
 function fPlusG(x){
-    return f1(x) + g(x);
+    return phi * f1(x) + g(x);
 }
 
 function g(x){
@@ -146,7 +228,7 @@ function g(x){
 }
 
 function f1(x){
-    return Math.sin(x) - (x/13);
+    return -x / 2 + 1; //  Math.sin(x) - (x/13);
 }
 
 /**
