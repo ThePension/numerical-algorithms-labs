@@ -1,4 +1,18 @@
 /**
+ * @brief Run all unit tests
+ */
+function runAllTests()
+{
+    testBinarySubtraction();
+    testBinaryAddition();
+    testMantisShifting();
+
+    testFloatAddition1();
+    testFloatAddition2();
+    testFloatAddition3();
+}
+
+/**
  * @brief Process the user input and then encode, decode and display the number
  */
 function submit_conversion() {
@@ -18,6 +32,9 @@ function submit_conversion() {
     $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
 }
 
+/**
+ * @brief Process the user input (two number), encode the numbers, add them, and then display the number
+ */
 function submit_addition() {
     const num1 = parseFloat($("num1").value);
     const num2 = parseFloat($("num2").value);
@@ -29,6 +46,14 @@ function submit_addition() {
     if (nbBits < 7 || nbBits > 256)
         return window.alert("Le nombre de bits doit être entre 7 et 256");
 
+    const float_number = float_addition(num1, num2, nbBits);
+    const float_code = decode_to_float(float_number);
+
+    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
+    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
+}
+
+function float_addition(num1, num2, nbBits){
     const e_length = exponent_size(nbBits);
 
     const target_abs1 = Math.abs(num1);
@@ -59,7 +84,21 @@ function submit_addition() {
         mantis_array1 = shiftMantis(mantis_array1, exponent_diff);
     }
 
-    let mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
+    let sign = 0;
+    let mantisRes_array;
+
+    if(num1 > 0 && num2 > 0){ // + +
+        sign = 0;
+        mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
+    }
+    else if(num1 < 0 && num2 < 0){ // - -
+        sign = 1;
+        mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
+    }
+    else{ // - + OR + -
+        sign = (num1 + num2) < 0 ? 1 : 0;
+        mantisRes_array = subBinaryNumbers(mantis_array1, mantis_array2);
+    }
 
     // OVERFLOW
     let overflowDec = Math.abs(mantisRes_array.length - mantis_array1.length);
@@ -69,47 +108,11 @@ function submit_addition() {
     }
 
     mantisRes_array.shift(); // Remove hidden bit
-
-    const sign = (num1 + num2) < 0 ? 1 : 0;
+    
     const d = Math.pow(2, e_length - 1) - 2;
     const exponent_value = maxExponent + d;
 
-    const float_number = [sign, ...intToBinary(exponent_value, e_length), ...mantisRes_array];
-    const float_code = decode_to_float(float_number);
-
-    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
-    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
-
-    /*****************
-     * TESTS SECTION *
-     *****************/
-
-    // TEST BINARY ADDITION
-    if(!testBinaryAddition()) console.log("Binary addition does'nt work");
-
-    // TEST MANTIS SHIFTING
-    if(!testMantisShifting()) console.log("Mantis shifting does't work");
-}
-
-function testMantisShifting()
-{
-    const initialMantis = [1, 0, 1, 1, 0];
-    const nbShift = 3;
-
-    const mantisTheorique = [0, 0, 0, 1, 0];
-    const mantisEmpirique = shiftMantis(initialMantis, nbShift);
-
-    return compareArray(mantisTheorique, mantisEmpirique);
-}
-
-function testBinaryAddition() {
-    let test1 = [0, 0, 1, 0];
-    let test2 = [0, 1, 1, 0];
-
-    let resTheorique = [1, 0, 0, 0];
-    let resEmpirique = addBinaryNumbers(test1, test2);
-
-    return compareArray(resTheorique, resEmpirique);
+    return [sign, ...intToBinary(exponent_value, e_length), ...mantisRes_array];
 }
 
 /**
@@ -128,6 +131,10 @@ function compareArray(arr1, arr2) {
     }
 
     return true; // Array are the same
+}
+
+function subBinaryNumbers(num1, num2){
+    return [];
 }
 
 /**
@@ -344,4 +351,74 @@ function exponent_size(size) {
         //IEEE Std 754-2008 e > 128 : round(4 ×log2 (k)) – 13
         return Math.round(4 * Math.log2(size) - 13);
     }
+}
+
+
+
+/*****************
+*   UNIT TESTS   *
+*****************/
+
+function testBinarySubtraction(){
+    let test1 = [1, 1, 0];
+    let test2 = [1, 0, 1];
+
+    let resTheorique = [0, 0, 1];
+    let resEmpirique = subBinaryNumbers(test1, test2);
+
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+}
+
+function testMantisShifting()
+{
+    const initialMantis = [1, 0, 1, 1, 0];
+    const nbShift = 3;
+
+    const mantisTheorique = [0, 0, 0, 1, 0];
+    const mantisEmpirique = shiftMantis(initialMantis, nbShift);
+
+    console.assert(compareArray(mantisTheorique, mantisEmpirique), "Mantis shifting doesn't work");
+}
+
+function testBinaryAddition() {
+    let test1 = [0, 0, 1, 0];
+    let test2 = [0, 1, 1, 0];
+
+    let resTheorique = [1, 0, 0, 0];
+    let resEmpirique = addBinaryNumbers(test1, test2);
+
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary addition doesn't work");
+}
+
+function testFloatAddition1(){
+    let num1 = 13;
+    let num2 = 26;
+    let nbBits = 16;
+
+    let resTheorique = 39;
+    let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
+
+    console.assert(resEmpirique == resTheorique, "Float addition doesn't work");
+}
+
+function testFloatAddition2(){
+    let num1 = -1;
+    let num2 = -23;
+    let nbBits = 75;
+
+    let resTheorique = -24;
+    let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
+
+    console.assert(resEmpirique == resTheorique, "Float addition doesn't work.");
+}
+
+function testFloatAddition3(){
+    let num1 = 1;
+    let num2 = -23;
+    let nbBits = 75;
+
+    let resTheorique = -22;
+    let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
+
+    console.assert(resEmpirique == resTheorique, "Float addition doesn't work.");
 }
