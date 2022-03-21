@@ -28,9 +28,7 @@
     <label for="b_value">Entrez le nombre de bits pour l'encodage [7;256] : </label>
     <input id="b_value" name="b_value" type="number" min="7" max="256" value="16" required>
 
-    <h3>Conversion</h3>
-
-    <br>
+    <h2>Conversion</h2>
 
     <label for="target_value">Nombre à approximer :</label>
     <input id="target_value" name="target_value" required>
@@ -38,6 +36,11 @@
     <br>
 
     <button onclick="submit_conversion()">Convertir</button>
+
+    <hr>
+    Résultat conversion : <br><br>
+    <div id="binary_code"></div>
+    <div id="binary_decode"></div>
 
     <h2>Addition / Soustraction</h2>
 
@@ -48,7 +51,8 @@
     <button onclick="submit_addition()">Additionner</button>
 
     <hr>
-    Résultat : <br><br>
-    <div id="binary_code"></div>
-    <div id="binary_decode"></div>
+    Résultat addition : <br><br>
+    <div id="binary_code_addition"></div>
+    <div id="binary_decode_addition"></div>
+
 </body>

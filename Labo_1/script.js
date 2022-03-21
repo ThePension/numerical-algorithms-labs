@@ -49,8 +49,8 @@ function submit_addition() {
     const float_number = float_addition(num1, num2, nbBits);
     const float_code = decode_to_float(float_number);
 
-    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
-    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
+    $('binary_code_addition').innerText = `Code binaire après encodage : ${float_number.join('')}`;
+    $('binary_decode_addition').innerText = `Code float après décodage : ${float_code}`;
 }
 
 function float_addition(num1, num2, nbBits){
