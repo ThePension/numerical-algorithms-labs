@@ -1,7 +1,7 @@
 /**
  * @brief Process the user input and then encode, decode and display the number
  */
-function submit_process() {
+function submit_conversion() {
     const target = parseFloat($("target_value").value);
     const nbBits = parseInt($("b_value").value);
 
@@ -16,6 +16,164 @@ function submit_process() {
 
     $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
     $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
+}
+
+function submit_addition() {
+    const num1 = parseFloat($("num1").value);
+    const num2 = parseFloat($("num2").value);
+    const nbBits = parseInt($("b_value").value);
+
+    if (isNaN(num1) || isNaN(num2) || isNaN(nbBits))
+        return window.alert("Veuillez entrer des nombres");
+
+    if (nbBits < 7 || nbBits > 256)
+        return window.alert("Le nombre de bits doit être entre 7 et 256");
+
+    const e_length = exponent_size(nbBits);
+
+    const target_abs1 = Math.abs(num1);
+    const e1 = Math.ceil(Math.log2(target_abs1));
+
+    const target_abs2 = Math.abs(num2);
+    const e2 = Math.ceil(Math.log2(target_abs2));
+
+    let exponent_diff = Math.abs(e1 - e2);
+
+    let maxExponent = 0;
+
+    let mantis_array1 = getMantis(num1, nbBits, e1, e_length); // Get mantis of number 1
+    let mantis_array2 = getMantis(num2, nbBits, e2, e_length); // Get mantis of number 2
+
+    mantis_array1.unshift(1); // Add hidden bit (1)
+    mantis_array2.unshift(1); // Add hidden bit (1)
+
+    if(e1 > e2){
+        maxExponent = e1;
+
+        // Shift mantis of number2 by exponent_diff
+        mantis_array2 = shiftMantis(mantis_array2, exponent_diff);
+    }else{
+        maxExponent = e2;
+
+        // Shift mantis of number1 by exponent_diff
+        mantis_array1 = shiftMantis(mantis_array1, exponent_diff);
+    }
+
+    let mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
+
+    // OVERFLOW
+    let overflowDec = Math.abs(mantisRes_array.length - mantis_array1.length);
+    if(overflowDec > 0){
+        for(let i = 0; i < overflowDec; i++) mantisRes_array.pop(); // Remove weaker bit
+        maxExponent += overflowDec; // Increase exponent
+    }
+
+    mantisRes_array.shift(); // Remove hidden bit
+
+    const sign = (num1 + num2) < 0 ? 1 : 0;
+    const d = Math.pow(2, e_length - 1) - 2;
+    const exponent_value = maxExponent + d;
+
+    const float_number = [sign, ...intToBinary(exponent_value, e_length), ...mantisRes_array];
+    const float_code = decode_to_float(float_number);
+
+    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
+    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
+
+    /*****************
+     * TESTS SECTION *
+     *****************/
+
+    // TEST BINARY ADDITION
+    if(!testBinaryAddition()) console.log("Binary addition does'nt work");
+
+    // TEST MANTIS SHIFTING
+    if(!testMantisShifting()) console.log("Mantis shifting does't work");
+}
+
+function testMantisShifting()
+{
+    const initialMantis = [1, 0, 1, 1, 0];
+    const nbShift = 3;
+
+    const mantisTheorique = [0, 0, 0, 1, 0];
+    const mantisEmpirique = shiftMantis(initialMantis, nbShift);
+
+    return compareArray(mantisTheorique, mantisEmpirique);
+}
+
+function testBinaryAddition() {
+    let test1 = [0, 0, 1, 0];
+    let test2 = [0, 1, 1, 0];
+
+    let resTheorique = [1, 0, 0, 0];
+    let resEmpirique = addBinaryNumbers(test1, test2);
+
+    return compareArray(resTheorique, resEmpirique);
+}
+
+/**
+ * @brief Compare two array
+ * 
+ * @param {Array} arr1 The first array
+ * @param {Array} arr2 The second array
+ * @returns {Boolean}
+ */
+function compareArray(arr1, arr2) {
+    // First, test numbers length
+    if(arr1.length != arr2.length) return false;
+
+    for(let i = 0; i < arr1.length; i++){
+        if(arr1[i] != arr2[i]) return false;
+    }
+
+    return true; // Array are the same
+}
+
+/**
+ * @brief Add two binary numbers
+ * 
+ * @param {Array<Number>} num1 The first number
+ * @param {Array<Number>} num2 The second number
+ * @returns {Array<Number>} The result of the addition
+ */
+function addBinaryNumbers(num1, num2){
+    let resBinary = [];
+    let carry = 0;
+    for(let i = num1.length - 1; i >= 0; i--){
+        if(num1[i] == 1 && num2[i] == 1){
+            if(carry == 1) resBinary.push(1);
+            else resBinary.push(0);
+            carry = 1;
+        }
+        else{
+            if(carry == 0) resBinary.push(num1[i] || num2[i]);
+            else{
+                if((num1[i] || num2[i]) == 1) resBinary.push(0);
+                else {
+                    resBinary.push(1);
+                    carry = 0;
+                }
+            }
+        }
+    }
+    if(carry == 1) resBinary.push(1);
+    return resBinary.reverse();
+}
+
+/**
+ * @brief Shift a array
+ * 
+ * @param {Array<Number>} array The mantis
+ * @param {Number} nbShifts The number of shifts needed
+ * @returns {Array<Number>} The mantis shifter
+ */
+function shiftMantis(array, nbShifts){
+    for(let i = 0; i < nbShifts; i++){
+        array.pop();
+        array.unshift(0);
+    }
+    return array;
 }
 
 /**
@@ -38,10 +196,27 @@ function encode_to_float(target, nbBits) {
     const d = Math.pow(2, e_length - 1) - 2;
     const exponent_value = e + d;
     const n = nbBits - 1 - e_length;
+    const mantis_array = getMantis(target, nbBits, e, e_length);
+
+    return [sign, ...intToBinary(exponent_value, e_length), ...mantis_array];
+}
+
+/**
+ * @brief Get the binary mantis of a number
+ * 
+ * @param {Number} target The number to get mantis from
+ * @param {*} nbBits Length of the binary array
+ * @param {*} exponent Exponent of the number
+ * @param {*} exponent_length Length of the exponent
+ * @returns {Array<Number>} Binary array
+ */
+function getMantis(target, nbBits, exponent, exponent_length){
+    const n = nbBits - 1 - exponent_length;
     const mantis_array = [];
+    const target_abs = Math.abs(target);
 
     let M = 0.5;
-    let base = Math.pow(2, e);
+    let base = Math.pow(2, exponent);
 
     for (let k = 0; k < n; k++) {
         const divider = 4 * Math.pow(2, k);
@@ -55,7 +230,7 @@ function encode_to_float(target, nbBits) {
         }
     }
 
-    return [sign, ...intToBinary(exponent_value, e_length), ...mantis_array];
+    return mantis_array;
 }
 
 /**

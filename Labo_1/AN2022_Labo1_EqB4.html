@@ -26,7 +26,9 @@
     <hr>
 
     <label for="b_value">Entrez le nombre de bits pour l'encodage [7;256] : </label>
-    <input id="b_value" name="b_value" type="number" min="7" max="256" required>
+    <input id="b_value" name="b_value" type="number" min="7" max="256" value="16" required>
+
+    <h3>Conversion</h3>
 
     <br>
 
@@ -35,7 +37,15 @@
 
     <br>
 
-    <button onclick="submit_process()">Submit</button>
+    <button onclick="submit_conversion()">Convertir</button>
+
+    <h2>Addition</h2>
+
+    <input id="num1" name="num1" type="number" value="13">
+    <br>
+    <input id="num2" name="num2" type="number" value="26">
+
+    <button onclick="submit_addition()">Additionner</button>
 
     <hr>
     Résultat : <br><br>
