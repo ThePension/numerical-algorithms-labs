@@ -124,6 +124,10 @@ function float_subtraction(num1, num2, nbBits){
 }
 
 function float_addition(num1, num2, nbBits){
+    // ZEROS
+    if(num1 == 0) return encode_to_float(num2, nbBits);
+    if(num2 == 0) return encode_to_float(num1, nbBits);
+
     const e_length = exponent_size(nbBits);
 
     const target_abs1 = Math.abs(num1);
@@ -451,7 +455,17 @@ function exponent_size(size) {
 *   UNIT TESTS   *
 *****************/
 
-function testBinarySubtraction(){
+function testBinarySubtraction1(){
+    let test1 = [1, 1, 0];
+    let test2 = [1, 0, 1];
+
+    let resTheorique = [0, 0, 1];
+    let resEmpirique = subBinaryNumbers(test1, test2);
+
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+}
+
+function testBinarySubtraction1(){
     let test1 = [1, 1, 0];
     let test2 = [1, 0, 1];
 
