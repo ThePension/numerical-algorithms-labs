@@ -4,7 +4,7 @@
 * Date : 03.03.2022
 *
 * Équipe : 
-* 	- Nicloas Aubert
+* 	- Nicolas Aubert
 *	- Lucas Gosteli
 *	- Vincent Jeannin
 * 	- Théo Vuilliomenet
@@ -12,7 +12,8 @@
 
 Contexte
 ========
-
+Ce laboratoire consiste à travailler sur un type float, afin de l'encoder sur un nombre de bits variables.
+L'encodage se constitue d'un bit de signe, un exposant, ainsi qu'une mantisse.
 
 Méthodes
 ========
@@ -34,6 +35,10 @@ Addition de nombre flottant :
 
 Conclusion
 ==========
+Notre laboratoire permet d'encoder et de décoder un float sur un nombre de bits donné par l'utilisateur, compris entre 7 et 256.
+La borne inférieure a été choisie à 7 car en-dessous, la mantisse n'est plus assez précise. Quant à la borne supérieure, elle a été choisie arbitrairement, mais n'est pas nécessaire. Cela fonctionne également au-desus de cette borne, mais la précision devient insignifiante
+Le laboratoire permet également de faire une addition et une soustraction entre 2 nombres, toujours sur un nombre de bits donné par l'utilisateur.
+Malheureusement, la soustraction ne fonctionne pas tout à fait.
 
 Références
 ==========
