@@ -89,10 +89,10 @@ function float_subtraction(num1, num2, nbBits){
     const e_length = exponent_size(nbBits);
 
     const target_abs1 = Math.abs(num1);
-    const e1 = Math.ceil(Math.log2(target_abs1));
+    let e1 = Math.ceil(Math.log2(target_abs1));
 
     const target_abs2 = Math.abs(num2);
-    const e2 = Math.ceil(Math.log2(target_abs2));
+    let e2 = Math.ceil(Math.log2(target_abs2));
 
     let exponent_diff = Math.abs(e1 - e2);
 
@@ -100,6 +100,20 @@ function float_subtraction(num1, num2, nbBits){
 
     let mantis_array1 = getMantis(num1, nbBits, e1, e_length); // Get mantis of number 1
     let mantis_array2 = getMantis(num2, nbBits, e2, e_length); // Get mantis of number 2
+
+    // NORMALIZE MANTIS 1
+    while(mantis_array1.includes(1) && mantis_array1[0] == 0){
+        mantis_array1.shift();
+        mantis_array1.push(0);
+        e1 -= 1;
+    }
+
+    // NORMALIZE MANTIS 2
+    while(mantis_array2.includes(1) && mantis_array2[0] == 0){
+        mantis_array2.shift();
+        mantis_array2.push(0);
+        e2 -= 1;
+    }
 
     mantis_array1.unshift(1); // Add hidden bit (1)
     mantis_array2.unshift(1); // Add hidden bit (1)
@@ -119,7 +133,7 @@ function float_subtraction(num1, num2, nbBits){
     const sign = (num1 - num2) < 0 ? 1 : 0;
     let mantisRes_array = subBinaryNumbers(mantis_array1, mantis_array2);
     
-    // NORMALIZE MANTIS
+    // NORMALIZE RESULTING MANTIS
     while(mantisRes_array.includes(1) && mantisRes_array[0] == 0){
         mantisRes_array.shift();
         mantisRes_array.push(0);
@@ -561,8 +575,6 @@ function testFloatAddition3(){
     let resTheorique = 22;
     let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
 
-    console.log(resEmpirique);
-
     console.assert(resEmpirique == resTheorique, "Float addition (subtraction) doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
@@ -573,8 +585,6 @@ function testFloatSubtraction1(){
 
     let resTheorique = -7;
     let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
-
-    console.log(resEmpirique);
 
     console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
@@ -587,8 +597,6 @@ function testFloatSubtraction2(){
     let resTheorique = 12;
     let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
 
-    console.log(resEmpirique);
-
     console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
@@ -599,8 +607,6 @@ function testFloatSubtraction3(){
 
     let resTheorique = 0;
     let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
-
-    console.log(resEmpirique);
 
     console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
