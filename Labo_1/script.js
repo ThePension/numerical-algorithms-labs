@@ -123,7 +123,7 @@ function float_subtraction(num1, num2, nbBits){
     while(mantisRes_array.includes(1) && mantisRes_array[0] == 0){
         mantisRes_array.shift();
         mantisRes_array.push(0);
-        maxExponent += 1;
+        maxExponent -= 1;
     }
 
     mantisRes_array.shift(); // Remove hidden bit
@@ -191,11 +191,11 @@ function float_addition(num1, num2, nbBits){
         maxExponent += overflowDec; // Increase exponent
     }
 
-       // NORMALIZE MANTIS
+    // NORMALIZE MANTIS
     while(mantisRes_array.includes(1) && mantisRes_array[0] == 0){
         mantisRes_array.shift();
         mantisRes_array.push(0);
-        maxExponent += 1;
+        maxExponent -= 1;
     }
 
     mantisRes_array.shift(); // Remove hidden bit
@@ -477,7 +477,7 @@ function testBinarySubtraction1(){
     let resTheorique = [0, 0, 1];
     let resEmpirique = subBinaryNumbers(num1, num2);
 
-    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testBinarySubtraction2(){
@@ -487,7 +487,7 @@ function testBinarySubtraction2(){
     let resTheorique = [0, 1, 0, 0, 1]; // 9
     let resEmpirique = subBinaryNumbers(num1, num2);
 
-    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testBinarySubtraction3(){
@@ -497,7 +497,7 @@ function testBinarySubtraction3(){
     let resTheorique = [0, 1, 0, 0]; // 4
     let resEmpirique = subBinaryNumbers(num1, num2);
 
-    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testBinarySubtraction4(){
@@ -507,7 +507,7 @@ function testBinarySubtraction4(){
     let resTheorique = [0, 1, 0, 0]; // (-)4
     let resEmpirique = subBinaryNumbers(num1, num2);
 
-    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testMantisShifting()
@@ -515,10 +515,10 @@ function testMantisShifting()
     const initialMantis = [1, 0, 1, 1, 0];
     const nbShift = 3;
 
-    const mantisTheorique = [0, 0, 0, 1, 0];
-    const mantisEmpirique = shiftMantis(initialMantis, nbShift);
+    const resTheorique = [0, 0, 0, 1, 0];
+    const resEmpirique = shiftMantis(initialMantis, nbShift);
 
-    console.assert(compareArray(mantisTheorique, mantisEmpirique), "Mantis shifting doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Mantis shifting doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testBinaryAddition() {
@@ -528,7 +528,7 @@ function testBinaryAddition() {
     let resTheorique = [1, 0, 0, 0];
     let resEmpirique = addBinaryNumbers(num1, num2);
 
-    console.assert(compareArray(resTheorique, resEmpirique), "Binary addition doesn't work");
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary addition doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatAddition1(){
@@ -539,7 +539,7 @@ function testFloatAddition1(){
     let resTheorique = 39;
     let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
 
-    console.assert(resEmpirique == resTheorique, "Float addition doesn't work");
+    console.assert(resEmpirique == resTheorique, "Float addition doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatAddition2(){
@@ -550,7 +550,7 @@ function testFloatAddition2(){
     let resTheorique = -24;
     let resEmpirique = decode_to_float(float_addition(num1, num2, nbBits));
 
-    console.assert(resEmpirique == resTheorique, "Float addition doesn't work.");
+    console.assert(resEmpirique == resTheorique, "Float addition doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatAddition3(){
@@ -563,7 +563,7 @@ function testFloatAddition3(){
 
     console.log(resEmpirique);
 
-    console.assert(resEmpirique == resTheorique, "Float addition (subtraction) doesn't work.");
+    console.assert(resEmpirique == resTheorique, "Float addition (subtraction) doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatSubtraction1(){
@@ -576,7 +576,7 @@ function testFloatSubtraction1(){
 
     console.log(resEmpirique);
 
-    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatSubtraction2(){
@@ -589,7 +589,7 @@ function testFloatSubtraction2(){
 
     console.log(resEmpirique);
 
-    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
 
 function testFloatSubtraction3(){
@@ -602,5 +602,5 @@ function testFloatSubtraction3(){
 
     console.log(resEmpirique);
 
-    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work. \nExpected result : " + resTheorique + " \nReal result : " + resEmpirique);
 }
