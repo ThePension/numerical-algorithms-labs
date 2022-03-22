@@ -3,10 +3,19 @@
  */
 function runAllTests()
 {
-    testBinarySubtraction();
+    // BINARY SUBTRACTION
+    testBinarySubtraction1();
+    testBinarySubtraction2();
+    testBinarySubtraction3();
+    testBinarySubtraction4();
+
+    // BINARY ADDITION
     testBinaryAddition();
+
+    // MANTISSA SHIFTING
     testMantisShifting();
 
+    // FLOAT ADDITION
     testFloatAddition1();
     testFloatAddition2();
     testFloatAddition3();
@@ -102,18 +111,11 @@ function float_subtraction(num1, num2, nbBits){
         mantis_array1 = shiftMantis(mantis_array1, exponent_diff);
     }
 
-    const sign = (num1 + num2) < 0 ? 1 : 0;
+    const sign = (num1 - num2) < 0 ? 1 : 0;
     let mantisRes_array;
 
     if(num2 < 0) mantisRes_array = subBinaryNumbers(mantis_array1, mantis_array2);
     else mantisRes_array = subBinaryNumbers(mantis_array2, mantis_array1);
-
-    // NORMALIZE MANTIS
-    while(mantisRes_array[0] == 0){
-        mantisRes_array.shift();
-        mantisRes_array.push(0);
-        maxExponent += 1;
-    }
     
     mantisRes_array.shift(); // Remove hidden bit
     
@@ -196,25 +198,29 @@ function float_addition(num1, num2, nbBits){
 }
 
 function subBinaryNumbers(num1, num2){
-    num2 = get2ndComplement(num2);
+    let res = [];
+    let borrow = 0;
 
-    res = addBinaryNumbers(num1, num2);
-    res.shift();
+    for(let i = num1.length - 1; i >= 0 ; i--){
+        // If borrow == 1, that means that the current bit of the top number has been borrowed
+        // So we have to set it to 0 if the current bit == 1
+        if(borrow == 1 && num1[i] == 1){
+            num1[i] = 0;
+            borrow = 0;
+        }
 
-    return res;
-}
-
-function get2ndComplement(num){
-    res = [];
-
-    for(let i = 0; i < num.length; i++){
-        res.unshift((num[i] == 1 ? 0 : 1));
+        if(num1[i] == 0 && num2[i] == 1){ // BORROW CASE
+            res.unshift(1);
+            borrow = 1;
+        }
+        else{
+            res.unshift(Math.abs(num1[i] - num2[i]));
+        }
     }
 
-    let binary1 = Array(num.length).fill(0);
-    binary1[num.length - 1] = 1;
+    if(borrow == 1) res[0] = 0;
 
-    return addBinaryNumbers(res, binary1);
+    return res;
 }
 
 /**
@@ -456,21 +462,41 @@ function exponent_size(size) {
 *****************/
 
 function testBinarySubtraction1(){
-    let test1 = [1, 1, 0];
-    let test2 = [1, 0, 1];
+    let num1 = [1, 1, 0];
+    let num2 = [1, 0, 1];
 
     let resTheorique = [0, 0, 1];
-    let resEmpirique = subBinaryNumbers(test1, test2);
+    let resEmpirique = subBinaryNumbers(num1, num2);
 
     console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
 }
 
-function testBinarySubtraction1(){
-    let test1 = [1, 1, 0];
-    let test2 = [1, 0, 1];
+function testBinarySubtraction2(){
+    let num1 = [1, 0, 1, 1, 0]; // = 22
+    let num2 = [0, 1, 1, 0, 1]; // = 13
 
-    let resTheorique = [0, 0, 1];
-    let resEmpirique = subBinaryNumbers(test1, test2);
+    let resTheorique = [0, 1, 0, 0, 1]; // 9
+    let resEmpirique = subBinaryNumbers(num1, num2);
+
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+}
+
+function testBinarySubtraction3(){
+    let num1 = [1, 0, 0, 1]; // = 9
+    let num2 = [0, 1, 0, 1]; // = 5
+
+    let resTheorique = [0, 1, 0, 0]; // 4
+    let resEmpirique = subBinaryNumbers(num1, num2);
+
+    console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
+}
+
+function testBinarySubtraction4(){
+    let num1 = [0, 1, 0, 1]; // = 5
+    let num2 = [1, 0, 0, 1]; // = 9
+
+    let resTheorique = [0, 1, 0, 0]; // (-)4
+    let resEmpirique = subBinaryNumbers(num1, num2);
 
     console.assert(compareArray(resTheorique, resEmpirique), "Binary subtraction doesn't work");
 }
@@ -487,11 +513,11 @@ function testMantisShifting()
 }
 
 function testBinaryAddition() {
-    let test1 = [0, 0, 1, 0];
-    let test2 = [0, 1, 1, 0];
+    let num1 = [0, 0, 1, 0];
+    let num2 = [0, 1, 1, 0];
 
     let resTheorique = [1, 0, 0, 0];
-    let resEmpirique = addBinaryNumbers(test1, test2);
+    let resEmpirique = addBinaryNumbers(num1, num2);
 
     console.assert(compareArray(resTheorique, resEmpirique), "Binary addition doesn't work");
 }
