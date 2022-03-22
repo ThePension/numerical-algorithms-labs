@@ -19,6 +19,11 @@ function runAllTests()
     testFloatAddition1();
     testFloatAddition2();
     testFloatAddition3();
+
+    // FLOAT SUBTRACTION
+    testFloatSubtraction1();
+    testFloatSubtraction2();
+    testFloatSubtraction3();
 }
 
 /**
@@ -112,11 +117,15 @@ function float_subtraction(num1, num2, nbBits){
     }
 
     const sign = (num1 - num2) < 0 ? 1 : 0;
-    let mantisRes_array;
-
-    if(num2 < 0) mantisRes_array = subBinaryNumbers(mantis_array1, mantis_array2);
-    else mantisRes_array = subBinaryNumbers(mantis_array2, mantis_array1);
+    let mantisRes_array = subBinaryNumbers(mantis_array1, mantis_array2);
     
+    // NORMALIZE MANTIS
+    while(mantisRes_array.includes(1) && mantisRes_array[0] == 0){
+        mantisRes_array.shift();
+        mantisRes_array.push(0);
+        maxExponent += 1;
+    }
+
     mantisRes_array.shift(); // Remove hidden bit
     
     const d = Math.pow(2, e_length - 1) - 2;
@@ -182,8 +191,8 @@ function float_addition(num1, num2, nbBits){
         maxExponent += overflowDec; // Increase exponent
     }
 
-    // NORMALIZE MANTIS
-    while(mantisRes_array[0] == 0){
+       // NORMALIZE MANTIS
+    while(mantisRes_array.includes(1) && mantisRes_array[0] == 0){
         mantisRes_array.shift();
         mantisRes_array.push(0);
         maxExponent += 1;
@@ -546,7 +555,7 @@ function testFloatAddition2(){
 
 function testFloatAddition3(){
     let num1 = 45;
-    let num2 = -23;
+    let num2 = 23;
     let nbBits = 75;
 
     let resTheorique = 22;
@@ -555,4 +564,43 @@ function testFloatAddition3(){
     console.log(resEmpirique);
 
     console.assert(resEmpirique == resTheorique, "Float addition (subtraction) doesn't work.");
+}
+
+function testFloatSubtraction1(){
+    let num1 = 12;
+    let num2 = 19;
+    let nbBits = 75;
+
+    let resTheorique = -7;
+    let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
+
+    console.log(resEmpirique);
+
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
+}
+
+function testFloatSubtraction2(){
+    let num1 = 28;
+    let num2 = 16;
+    let nbBits = 75;
+
+    let resTheorique = 12;
+    let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
+
+    console.log(resEmpirique);
+
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
+}
+
+function testFloatSubtraction3(){
+    let num1 = 29;
+    let num2 = 29;
+    let nbBits = 75;
+
+    let resTheorique = 0;
+    let resEmpirique = decode_to_float(float_subtraction(num1, num2, nbBits));
+
+    console.log(resEmpirique);
+
+    console.assert(resEmpirique == resTheorique, "Float subtraction doesn't work.");
 }
