@@ -13,8 +13,24 @@
 Contexte
 ========
 
+
 Méthodes
 ========
+
+
+Addition de nombre flottant :
+- Trouver le nombre le plus grand et calculer son exposant. C'est celui-ci qui sera utilisé par la suite.
+- Calculer la différence entre les exposants (valeur absolue), appelé expDiff.
+- Récupérer la mantisse de chaque nombre (avec bit caché).
+- Décaler la mantisse du nombre le plus petit, expDiff fois vers la droite (expDiff bits de poids faibles sont perdus, expDiff nouveaux bits de poids forts valent 0).
+  Cette manipulation permet de mettre les deux nombres au même exposant (en perdant un peu de précision sur le plus petit des deux)
+- Réaliser l'addition binaire des deux mantisses. Le résultat devient notre nouvelle mantisse.
+- S'il y a overflow (un bit de poids fort en plus pour pouvoir stocker le résultat) :
+    - Décaler le mantisse résultante sur la droite de 1 (afin de conserver le bit de poids fort, qui contient beaucoup plus de précision)
+    - Incrémenter l'exposant de 1
+- Retirer le bit de poids fort de la mantisse (bit caché à 1)
+- Récupérer le signe du résultat de l'addition
+
 
 Conclusion
 ==========
