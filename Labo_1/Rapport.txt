@@ -1,6 +1,6 @@
 **********************************************************************
 * Nom du cours : Mathématiques spécifiques II (Algorithmes numériques)
-* Contexte : Labo1
+* Contexte : Labo 1
 * Date : 03.03.2022
 *
 * Équipe : 
@@ -15,30 +15,68 @@ Contexte
 Ce laboratoire consiste à travailler sur un type float, afin de l'encoder sur un nombre de bits variables.
 L'encodage se constitue d'un bit de signe, un exposant, ainsi qu'une mantisse.
 
+
 Méthodes
 ========
+Le premier point sur lequel nous nous sommes penché est la répartition des bits à disposition pour encoder notre flottant.
+Nous savons déjà que dans n'importe quel cas nous aurons un unique bit de signe. Il ne reste donc plus qu'à déterminer la répartition entre exposante et mantisse.
+Cependant, la mantisse n'est là que pour gagner en précision. C'est pourquoi le plus important est de déterminer une bonne taille suffisante pour l'exposant.
+Pour ce faire, nous avions à disposition les standards suivants :
+- Pour 16 bits, 5 bits d'exposant;
+- Pour 32 bits, 8 bits d'exposant;
+- Pour 64 bits, 11 bits d'exposant;
+- Pour 128 bits, 15 bits d'exposant;
+- Au delà de 128 bits, il existe une formule standard pour obtenir la taille de l'exposant en fonction du nombre de bits à disposition.
+
+Notre idée était d'effectuer une sorte de régression linéaire afin d'obtenir les tailles d'exposants manquantes.
+Cependant, nous avons rapidement compris qu'il était plus approprié d'effectuer une régression quadratique pour suivre au mieux les standards déjà en vigueur.
+Pour ce faire, nous avons déléguer ce travail à WolframAlpha qui nous a obtenu une formule statisfaisante.
+De plus, nous avons remarqué qu'il était difficile et limitant d'encoder des nombres flottants avec moins de 5 bits d'exposant.
+C'est pourquoi nous avons volontairement borné le nombre de bits d'exposant à un minimum de 5.
+
+
+Encodage d'un nombre flottant :
+- Tester si le nombre à encoder est positif ou négatif afin de renseigner le bit de signe;
+- A l'aide d'un logarithme en base 2 arrondi à l'entier supérieur, trouver la première puissance de 2 qui soit supérieur à la valeur que l'on souhaite encoder;
+- Utiliser la formule produite par WolframAlpha sur la taille de l'exposant en fonction du nombre de bits à disposition, pour obtenir la taille de l'exposant;
+- Déduire la constante d à l'aide de la fonction suivante : d=(2^E-1)-2, E étant la taille de l'exposant;
+- Calculer la valeur de l'exposant qui sera encodée de sorte à ce que cette valeur moins d soit la valeur réelle;
+- Déduire la taille de la mantisse (Nb bits à disposition - E - 1);
+- Calculer la mantisse :
+	Ce calcul se fait dans une boucle for qui va tester pour chaque bits de la mantisse si on s'approche de la valeur à encoder sans la dépasser.
+	Si c'est le cas, on mets ce bit à 1 dans la mantisse et sinon à 0.
+- Concaténer toutes les parties de l'encodage signe|exposant...|mantisse... afin d'obtenir l'encodage complet.
+
+
+Décodage d'un nombre flottant :
+La méthode utilisée pour le décodage est exactement la même que celle vue en cours de Mathématiques spécifiques 2.
+C'est pourquoi elle ne sera pas détaillée dans ce rapport.
 
 
 Addition de nombre flottant :
-- Trouver le nombre le plus grand et calculer son exposant. C'est celui-ci qui sera utilisé par la suite.
-- Calculer la différence entre les exposants (valeur absolue), appelé expDiff.
-- Récupérer la mantisse de chaque nombre (avec bit caché).
+- Trouver le nombre le plus grand et calculer son exposant. C'est celui-ci qui sera utilisé par la suite;
+- Calculer la différence entre les exposants (valeur absolue), appelé expDiff;
+- Récupérer la mantisse de chaque nombre (avec bit caché);
 - Décaler la mantisse du nombre le plus petit, expDiff fois vers la droite (expDiff bits de poids faibles sont perdus, expDiff nouveaux bits de poids forts valent 0).
-  Cette manipulation permet de mettre les deux nombres au même exposant (en perdant un peu de précision sur le plus petit des deux)
-- Réaliser l'addition binaire des deux mantisses. Le résultat devient notre nouvelle mantisse.
+  Cette manipulation permet de mettre les deux nombres au même exposant (en perdant un peu de précision sur le plus petit des deux);
+- Réaliser l'addition binaire des deux mantisses. Le résultat devient notre nouvelle mantisse;
 - S'il y a overflow (un bit de poids fort en plus pour pouvoir stocker le résultat) :
-    - Décaler le mantisse résultante sur la droite de 1 (afin de conserver le bit de poids fort, qui contient beaucoup plus de précision)
-    - Incrémenter l'exposant de 1
-- Retirer le bit de poids fort de la mantisse (bit caché à 1)
-- Récupérer le signe du résultat de l'addition
+    - Décaler le mantisse résultante sur la droite de 1 (afin de conserver le bit de poids fort, qui contient beaucoup plus de précision);
+    - Incrémenter l'exposant de 1.
+- Retirer le bit de poids fort de la mantisse (bit caché à 1);
+- Récupérer le signe du résultat de l'addition.
 
 
 Conclusion
 ==========
 Notre laboratoire permet d'encoder et de décoder un float sur un nombre de bits donné par l'utilisateur, compris entre 7 et 256.
-La borne inférieure a été choisie à 7 car en-dessous, la mantisse n'est plus assez précise. Quant à la borne supérieure, elle a été choisie arbitrairement, mais n'est pas nécessaire. Cela fonctionne également au-desus de cette borne, mais la précision devient insignifiante
+La borne inférieure a été choisie à 7 car en-dessous, il n'y plus assez de bits pour la mantisse. Quant à la borne supérieure, elle a été choisie arbitrairement, mais n'est pas nécessaire. Cela fonctionne également au-dessus de cette borne.
 Le laboratoire permet également de faire une addition et une soustraction entre 2 nombres, toujours sur un nombre de bits donné par l'utilisateur.
 Malheureusement, la soustraction ne fonctionne pas tout à fait.
 
+
 Références
 ==========
+- https://www.wolframalpha.com/
+- https://standards.ieee.org/ieee/754/4211/
+- https://ieeexplore.ieee.org/document/4610935

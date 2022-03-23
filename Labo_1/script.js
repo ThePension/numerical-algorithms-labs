@@ -188,12 +188,10 @@ function float_addition(num1, num2, nbBits) {
     if (num1 > 0 && num2 > 0) { // + +
         sign = 0;
         mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
-    }
-    else if (num1 < 0 && num2 < 0) { // - -
+    } else if (num1 < 0 && num2 < 0) { // - -
         sign = 1;
         mantisRes_array = addBinaryNumbers(mantis_array1, mantis_array2);
-    }
-    else { // - + OR + -
+    } else { // - + OR + -
         return float_subtraction(num1, num2, nbBits);
     }
 
@@ -234,8 +232,7 @@ function subBinaryNumbers(num1, num2) {
         if (num1[i] == 0 && num2[i] == 1) { // BORROW CASE
             res.unshift(1);
             borrow = 1;
-        }
-        else {
+        } else {
             res.unshift(Math.abs(num1[i] - num2[i]));
         }
     }
@@ -260,8 +257,7 @@ function addBinaryNumbers(num1, num2) {
             if (carry == 1) resBinary.push(1);
             else resBinary.push(0);
             carry = 1;
-        }
-        else {
+        } else {
             if (carry == 0) resBinary.push(num1[i] || num2[i]);
             else {
                 if ((num1[i] || num2[i]) == 1) resBinary.push(0);
@@ -310,7 +306,6 @@ function encode_to_float(target, nbBits) {
     const e_length = exponent_size(nbBits);
     const d = Math.pow(2, e_length - 1) - 2;
     const exponent_value = e + d;
-    const n = nbBits - 1 - e_length;
     const mantis_array = getMantis(target, nbBits, e, e_length);
 
     return [sign, ...intToBinary(exponent_value, e_length), ...mantis_array];
@@ -339,8 +334,7 @@ function getMantis(target, nbBits, exponent, exponent_length) {
         if ((M + 1 / divider) * base <= target_abs) {
             M += 1 / divider;
             mantis_array.push(1);
-        }
-        else {
+        } else {
             mantis_array.push(0);
         }
     }
@@ -450,12 +444,10 @@ function $(id) {
 function exponent_size(size) {
     if (size < 12) {
         return 5;
-    }
-    else if (size < 128) {
+    } else if (size < 128) {
         //estimation de la fonction suivant "IEEE std 754-2008", formule wolframealpha : quadratic fit {(16;5),(32;8),(64;11),(128;15)}, R_2 0.994108
         return Math.round(-0.000588038 * Math.pow(size, 2) + 0.171371 * size + 2.66667);
-    }
-    else {
+    } else {
         //IEEE Std 754-2008 e > 128 : round(4 ×log2 (k)) – 13
         return Math.round(4 * Math.log2(size) - 13);
     }
@@ -480,8 +472,8 @@ function compareArray(arr1, arr2) {
 }
 
 /*****************
-*   UNIT TESTS   *
-*****************/
+ *   UNIT TESTS   *
+ *****************/
 
 function testBinarySubtraction1() {
     let num1 = [1, 1, 0];
