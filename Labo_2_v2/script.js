@@ -1,10 +1,17 @@
-const funcArray = [f1, f2];
-var f = null;
-var phi = null;
+/**
+ * @author Nicolas Aubert, Lucas Gosteli, Vincent Jeannin, Théo Vuilliomenet
+ * @brief HE-Arc 2022 Mathématiques spécifiques 2 (algorithmes numériques) Labo 2
+ */
 
-async function setup() {
-    sleep = ms => new Promise(r => setTimeout(r, ms));
+const funcArray = [f1, f2]; // Array that contains two functions
+var f = null; // Current function to process
+var phi = null; // Current value of constant phi
 
+/**
+ * @brief Main function called for every modification in parameters.
+ *        This function initialize the program and draw everything.
+ */
+function setup() {
     const canvas = document.querySelector('#canvas');
 
     let borneMin = parseInt($("borneMin").value);
@@ -23,16 +30,22 @@ async function setup() {
 
     ctx.setTransform(1, 0, 0, -1, canvas.width / 2, canvas.height / 2); // Flip Y to the top and place the (0,0) in the middle
 
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f);
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
 
     if (phi != 0)
-        await findRacines(canvas, borneMin, borneMax, 'pink');
+        findRacines(canvas, borneMin, borneMax, 'pink');
 
     ctx.resetTransform(); // restore transform
 }
 
+/**
+ * @brief This function draws the X and Y axis.
+ * 
+ * @param {Element} canvas 
+ * @param {Number} unitInPixels 
+ */
 function drawAxis(canvas, unitInPixels = 1) {
     if (!canvas.getContext) { return; }
 
@@ -75,7 +88,16 @@ function drawAxis(canvas, unitInPixels = 1) {
     ctx.stroke();
 }
 
-async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, funct) {
+/**
+ * @brief This function draws the function passed in parameter.
+ * 
+ * @param {Element} canvas 
+ * @param {Number} borneMin 
+ * @param {Number} borneMax 
+ * @param {String} lineColor 
+ * @param {Function} funct 
+ */
+function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, funct) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -101,7 +123,15 @@ async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, funct
     }
 }
 
-async function findRacines(canvas, borneMin, borneMax, lineColor) {
+/**
+ * @brief This function finds the zeros of a function.
+ * 
+ * @param {Element} canvas 
+ * @param {Number} borneMin 
+ * @param {Number} borneMax 
+ * @param {String} lineColor 
+ */
+function findRacines(canvas, borneMin, borneMax, lineColor) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     let startX = borneMin * unitInPixels;
@@ -130,6 +160,14 @@ async function findRacines(canvas, borneMin, borneMax, lineColor) {
     $("result").innerText += racinesArray.map(el => el = `X${counter++} : ${el / unitInPixels}`).join('\n');
 }
 
+/**
+ * @brief This function draws the geometrical resolution.
+ * 
+ * @param {Element} canevas 
+ * @param {Number} startX 
+ * @param {Number} unitInPixels 
+ * @param {String} lineColor 
+ */
 function drawRacine(canevas, startX, unitInPixels, lineColor) {
     const ctx = canevas.getContext('2d');
 
@@ -180,6 +218,15 @@ function drawRacine(canevas, startX, unitInPixels, lineColor) {
     ctx.stroke();
 }
 
+/**
+ * @brief This function try to find if a function has a zero from a Xo (startX).
+ * 
+ * @param {Number} startX 
+ * @param {Number} unitInPixels 
+ * @param {Number} itermax 
+ * 
+ * @returns {Array<Boolean, Number>} If a zero is find the Boolean is true and the number is the Xo.
+ */
 function findRacine(startX, unitInPixels, itermax) {
     let oldX = startX;
     let oldY = fPlusG(startX / unitInPixels) * unitInPixels;
@@ -209,18 +256,46 @@ function findRacine(startX, unitInPixels, itermax) {
     return [false, 0];
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function fPlusG(x) {
     return x + (phi * Math.abs(f(x)));
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function g(x) {
     return x;
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function f1(x) {
     return Math.sin(x) - (x / 13);
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function f2(x) {
     return x / (1 - (x * x));
 }
