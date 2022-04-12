@@ -1,3 +1,7 @@
+const funcArray = [f1, f2];
+var f = null;
+var phi = null;
+
 async function setup() {
     sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -5,8 +9,10 @@ async function setup() {
 
     let borneMin = parseInt($("borneMin").value);
     let borneMax = parseInt($("borneMax").value);
+    phi = parseFloat($("phi").value);
+    const index = parseInt($("function_select").value);
 
-    phi = parseInt($("phi").value);
+    f = funcArray[index];
 
     unitInPixels = canvas.width / (borneMax - borneMin);
 
@@ -17,7 +23,7 @@ async function setup() {
 
     ctx.setTransform(1, 0, 0, -1, canvas.width / 2, canvas.height / 2); // Flip Y to the top and place the (0,0) in the middle
 
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f1);
+    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f);
     await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
     await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
 
@@ -69,7 +75,7 @@ function drawAxis(canvas, unitInPixels = 1) {
     ctx.stroke();
 }
 
-async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f) {
+async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, funct) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -82,17 +88,16 @@ async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f) {
     ctx.lineWidth = 1;
 
     let oldX = borneMin;
-    let oldY = f(oldX / unitInPixels) * unitInPixels;
+    let oldY = funct(oldX / unitInPixels) * unitInPixels;
 
     for (let x = borneMin; x < borneMax; x += 1) {
-        let y = f(x / unitInPixels) * unitInPixels;
+        let y = funct(x / unitInPixels) * unitInPixels;
         ctx.beginPath();
         ctx.moveTo(oldX, oldY);
         ctx.lineTo(x, y);
         ctx.stroke();
         oldX = x;
         oldY = y;
-        // await sleep(0.01);
     }
 }
 
@@ -108,15 +113,21 @@ async function findRacines(canvas, borneMin, borneMax, lineColor) {
 
     while (i < stopX) {
         let result = findRacine(i, unitInPixels, 1000);
-        if (result) {
-            console.log("Racine : " + result / unitInPixels);
-            if (!racinesArray.includes(result)) {
+        console.log(result[0]);
+        if (result[0]) {
+            if (!racinesArray.includes(result[1])) {
                 drawRacine(canvas, i, unitInPixels, lineColor);
-                racinesArray.push(result);
+                racinesArray.push(result[1]);
+                console.log("Racine : " + result[1] / unitInPixels);
             }
         }
         i++;
     }
+
+    $("result").innerText = "Zéro(s) de la fonction : \n\n";
+    let counter = 0;
+
+    $("result").innerText += racinesArray.map(el => el = `X${counter++} : ${el / unitInPixels}`).join('\n');
 }
 
 function drawRacine(canevas, startX, unitInPixels, lineColor) {
@@ -137,7 +148,6 @@ function drawRacine(canevas, startX, unitInPixels, lineColor) {
     ctx.moveTo(oldX, oldY);
     ctx.lineTo(x, y);
     ctx.stroke();
-    sleep(50);
 
     while (Math.abs(oldX - x) > 0.01 && count < 100) {
         oldX = x
@@ -151,7 +161,6 @@ function drawRacine(canevas, startX, unitInPixels, lineColor) {
         ctx.moveTo(oldX, oldY);
         ctx.lineTo(x, y);
         ctx.stroke();
-        sleep(50);
 
         oldX = x;
         oldY = y;
@@ -160,7 +169,6 @@ function drawRacine(canevas, startX, unitInPixels, lineColor) {
         ctx.moveTo(oldX, oldY);
         ctx.lineTo(x, y);
         ctx.stroke();
-        sleep(50);
 
         count++;
     }
@@ -192,16 +200,17 @@ function findRacine(startX, unitInPixels, itermax) {
         x = y;
 
         if (oldX == x) { // COMPUTER EPSILON
-            return x;
+            console.log("find racine : " + x / unitInPixels);
+            return [true, x];
         }
         count++;
     }
 
-    return false;
+    return [false, 0];
 }
 
 function fPlusG(x) {
-    return phi * f1(x) + g(x);
+    return x + (phi * Math.abs(f(x)));
 }
 
 function g(x) {
@@ -209,7 +218,11 @@ function g(x) {
 }
 
 function f1(x) {
-    return Math.sin(x) - (x / 13); //x / (1 - (x * x)); //-x / 2 + 1; //
+    return Math.sin(x) - (x / 13);
+}
+
+function f2(x) {
+    return x / (1 - (x * x));
 }
 
 /**
