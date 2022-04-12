@@ -24,7 +24,7 @@ async function setup() {
     await drawFindRacines(canvas, borneMin, borneMax, 'pink', f1);
 }
 
-function drawAxis(canvas, unitInPixels = 1){
+function drawAxis(canvas, unitInPixels = 1) {
     if (!canvas.getContext) { return; }
 
     const ctx = canvas.getContext('2d');
@@ -34,16 +34,16 @@ function drawAxis(canvas, unitInPixels = 1){
     ctx.beginPath();
     let w = canvas.width;
     // X AXIS
-    ctx.moveTo(0, w/2);
-    ctx.lineTo(w, w/2);
-    ctx.moveTo(w, w/2);
-    ctx.lineTo(w - 10, w/2 + 10);
-    ctx.moveTo(w, w/2);
-    ctx.lineTo(w - 10, w/2 - 10);
+    ctx.moveTo(0, w / 2);
+    ctx.lineTo(w, w / 2);
+    ctx.moveTo(w, w / 2);
+    ctx.lineTo(w - 10, w / 2 + 10);
+    ctx.moveTo(w, w / 2);
+    ctx.lineTo(w - 10, w / 2 - 10);
 
     let dec = unitInPixels;
 
-    for(let i = -canvas.width + dec; i < canvas.width - dec; i += dec){
+    for (let i = -canvas.width + dec; i < canvas.width - dec; i += dec) {
         ctx.moveTo(i, w / 2 - 5);
         ctx.lineTo(i, w / 2 + 5);
     }
@@ -51,22 +51,22 @@ function drawAxis(canvas, unitInPixels = 1){
     let h = canvas.height;
 
     // Y AXIS
-    ctx.moveTo(h/2, 0);
-    ctx.lineTo(h/2, h);
-    ctx.moveTo(h/2, 0);
-    ctx.lineTo(h/2 - 10, 10);
-    ctx.moveTo(h/2, 0);
-    ctx.lineTo(h/2 + 10, 10);
+    ctx.moveTo(h / 2, 0);
+    ctx.lineTo(h / 2, h);
+    ctx.moveTo(h / 2, 0);
+    ctx.lineTo(h / 2 - 10, 10);
+    ctx.moveTo(h / 2, 0);
+    ctx.lineTo(h / 2 + 10, 10);
 
-    for(let i = -canvas.height + dec; i < canvas.height - dec; i += dec){
-        ctx.moveTo(h/2 - 5, i);
-        ctx.lineTo(h/2 + 5, i);
+    for (let i = -canvas.height + dec; i < canvas.height - dec; i += dec) {
+        ctx.moveTo(h / 2 - 5, i);
+        ctx.lineTo(h / 2 + 5, i);
     }
 
     ctx.stroke();
 }
 
-async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
+async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -83,7 +83,7 @@ async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
     let oldX = borneMin;
     let oldY = f(oldX / unitInPixels) * unitInPixels;
 
-    for(let x = borneMin; x < borneMax; x += 1){
+    for (let x = borneMin; x < borneMax; x += 1) {
         let y = f(x / unitInPixels) * unitInPixels;
         ctx.beginPath();
         ctx.moveTo(oldX + decX, oldY + decY);
@@ -95,7 +95,7 @@ async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f){
     }
 }
 
-async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
+async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -114,10 +114,10 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
     let count = 0;
     let x = borneMin + 1;
     let y = 0;
-    while(x < borneMax){
+    while (x < borneMax) {
         // console.log("fPlusG("+x/ unitInPixels+") = " + fPlusG(x/ unitInPixels));
         // console.log("g("+x/ unitInPixels+") = " + g(x/ unitInPixels));
-        if(fPlusG(x / unitInPixels) > g(x / unitInPixels)){
+        if (fPlusG(x / unitInPixels) > g(x / unitInPixels)) {
             // console.log("Au-dessus");
             ctx.strokeStyle = 'pink';
             // F(X)
@@ -143,7 +143,7 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
 
             x = g(x / unitInPixels) * unitInPixels;
             x = y;
-            if(Math.abs(oldX - x) < 0.00001) {
+            if (Math.abs(oldX - x) < 0.00001) {
                 ctx.strokeStyle = 'cyan';
                 ctx.beginPath();
                 ctx.moveTo(oldX + decX, y + decY);
@@ -152,21 +152,19 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
                 console.log("Racine : " + x / unitInPixels);
                 x += unitInPixels;
             }
-            
-            await sleep(100);
-        }
-        else
-        {
-           x += unitInPixels;
-           oldX = x;
-           y = fPlusG(x / unitInPixels) * unitInPixels;
-           oldY = y;
-        }  
 
-        if(count > 1000) {
+            await sleep(100);
+        } else {
+            x += unitInPixels;
+            oldX = x;
+            y = fPlusG(x / unitInPixels) * unitInPixels;
+            oldY = y;
+        }
+
+        if (count > 1000) {
             console.log("Counter max reached");
             return;
-        }   
+        }
     }
 
     oldX = borneMax;
@@ -174,8 +172,8 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
     count = 0;
     x = borneMax - 1;
     y = 0;
-    while(x > borneMin){
-        if(g(x / unitInPixels) > fPlusG(x / unitInPixels)){
+    while (x > borneMin) {
+        if (g(x / unitInPixels) > fPlusG(x / unitInPixels)) {
             console.log("test");
             // console.log("Au-dessus");
             ctx.strokeStyle = 'orange';
@@ -202,7 +200,7 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
 
             x = g(x / unitInPixels) * unitInPixels;
             x = y;
-            if(Math.abs(oldX - x) < 0.00001) {
+            if (Math.abs(oldX - x) < 0.00001) {
                 ctx.strokeStyle = 'cyan';
                 ctx.beginPath();
                 ctx.moveTo(oldX + decX, y + decY);
@@ -211,23 +209,23 @@ async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f){
                 console.log("Racine : " + x / unitInPixels);
                 x -= unitInPixels;
             }
-            
+
             await sleep(100);
         }
         count++;
-        if(count > 1000) return;
+        if (count > 1000) return;
     }
 }
 
-function fPlusG(x){
+function fPlusG(x) {
     return phi * f1(x) + g(x);
 }
 
-function g(x){
+function g(x) {
     return x;
 }
 
-function f1(x){
+function f1(x) {
     return -x / 2 + 1; //  Math.sin(x) - (x/13);
 }
 

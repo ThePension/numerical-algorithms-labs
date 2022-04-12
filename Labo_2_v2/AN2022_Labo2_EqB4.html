@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<head lang="fr">
+    <meta charset="UTF-8">
+    <title>AN2022_Labo2_EqB4</title>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+
+<body onload="setup()">
+    <h1>Labo2</h1>
+    <p>Équipe 4 :</p>
+    <ul>
+        <li>Nicolas Aubert</li>
+        <li>Lucas Gosteli</li>
+        <li>Vincent Jeannin</li>
+        <li>Théo Vuilliomenet</li>
+    </ul>
+    <p>Date : 17.03.2022</p>
+    <hr>
+
+    <canvas id="canvas" height="500" width="500">
+    </canvas>
+
+    <br>
+    <label>Borne min : </label>
+    <input type="number" max="-1" min="-100" value="-10" step="1" id="borneMin" onchange="setup()">
+
+    <label>Borne max : </label>
+    <input type="number" min="1" max="100" value="10" step="1" id="borneMax" onchange="setup()">
+
+    <label>Phi : </label>
+    <input type="number" min="-5" max="5" value="1" step="1" id="phi" onchange="setup()">
+
+    <hr>
+
+    <div id="result"></div>
+</body>
