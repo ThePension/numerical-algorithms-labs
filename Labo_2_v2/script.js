@@ -5,7 +5,7 @@
 
 const funcArray = [f1, f2]; // Array that contains two functions
 var f = null; // Current function to process
-var phi = null; // Current value of constant phi
+var lambda = null; // Current value of constant lambda
 
 /**
  * @brief Main function called for every modification in parameters.
@@ -16,7 +16,7 @@ function setup() {
 
     let borneMin = parseInt($("borneMin").value);
     let borneMax = parseInt($("borneMax").value);
-    phi = parseFloat($("phi").value);
+    lambda = parseFloat($("lambda").value);
     const index = parseInt($("function_select").value);
 
     f = funcArray[index];
@@ -34,7 +34,7 @@ function setup() {
     drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
     drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
 
-    if (phi != 0)
+    if (lambda != 0)
         findRacines(canvas, borneMin, borneMax, 'pink');
 
     ctx.resetTransform(); // restore transform
@@ -42,12 +42,12 @@ function setup() {
 
 /**
  * @brief This function draws the X and Y axis.
- * 
- * @param {Element} canvas 
- * @param {Number} unitInPixels 
+ *
+ * @param {Element} canvas
+ * @param {Number} unitInPixels
  */
 function drawAxis(canvas, unitInPixels = 1) {
-    if (!canvas.getContext) { return; }
+    if (!canvas.getContext) return;
 
     const ctx = canvas.getContext('2d');
     ctx.strokeStyle = "black";
@@ -55,6 +55,7 @@ function drawAxis(canvas, unitInPixels = 1) {
 
     ctx.beginPath();
     let w = canvas.width;
+
     // X AXIS
     ctx.moveTo(0, w / 2);
     ctx.lineTo(w, w / 2);
@@ -65,7 +66,7 @@ function drawAxis(canvas, unitInPixels = 1) {
 
     let dec = unitInPixels;
 
-    for (let i = -canvas.width + dec; i < canvas.width - dec; i += dec) {
+    for (let i = -w + dec; i < w - dec; i += dec) {
         ctx.moveTo(i, w / 2 - 5);
         ctx.lineTo(i, w / 2 + 5);
     }
@@ -138,19 +139,18 @@ function findRacines(canvas, borneMin, borneMax, lineColor) {
     let stopX = borneMax * unitInPixels;
     let i = startX;
 
-    const ctx = canvas.getContext('2d');
     let racinesArray = [];
 
     while (i < stopX) {
         let result = findRacine(i, unitInPixels, 1000);
-        console.log(result[0]);
+
         if (result[0]) {
             if (!racinesArray.includes(result[1])) {
                 drawRacine(canvas, i, unitInPixels, lineColor);
                 racinesArray.push(result[1]);
-                console.log("Racine : " + result[1] / unitInPixels);
             }
         }
+
         i++;
     }
 
@@ -247,9 +247,9 @@ function findRacine(startX, unitInPixels, itermax) {
         x = y;
 
         if (oldX == x) { // COMPUTER EPSILON
-            console.log("find racine : " + x / unitInPixels);
             return [true, x];
         }
+
         count++;
     }
 
@@ -264,7 +264,7 @@ function findRacine(startX, unitInPixels, itermax) {
  * @returns {Number}
  */
 function fPlusG(x) {
-    return x + (phi * Math.abs(f(x)));
+    return x + (lambda * Math.abs(f(x)));
 }
 
 /**
