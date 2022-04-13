@@ -1,12 +1,25 @@
-async function setup() {
-    sleep = ms => new Promise(r => setTimeout(r, ms));
+/**
+ * @author Nicolas Aubert, Lucas Gosteli, Vincent Jeannin, Théo Vuilliomenet
+ * @brief HE-Arc 2022 Mathématiques spécifiques 2 (algorithmes numériques) Labo 2
+ */
 
+const funcArray = [f1, f2]; // Array that contains two functions
+var f = null; // Current function to process
+var lambda = null; // Current value of constant lambda
+
+/**
+ * @brief Main function called for every modification in parameters.
+ *        This function initialize the program and draw everything.
+ */
+function setup() {
     const canvas = document.querySelector('#canvas');
 
     let borneMin = parseInt($("borneMin").value);
     let borneMax = parseInt($("borneMax").value);
+    lambda = parseFloat($("lambda").value);
+    const index = parseInt($("function_select").value);
 
-    phi = parseInt($("phi").value);
+    f = funcArray[index];
 
     unitInPixels = canvas.width / (borneMax - borneMin);
 
@@ -15,17 +28,26 @@ async function setup() {
 
     drawAxis(canvas, unitInPixels); // Draw the axis
 
-    ctx.setTransform(1, 0, 0, -1, 0, canvas.height); // FLIP ON Y AXIS
+    ctx.setTransform(1, 0, 0, -1, canvas.width / 2, canvas.height / 2); // Flip Y to the top and place the (0,0) in the middle
 
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f1);
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
-    await drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'red', f);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'blue', g);
+    drawFunctionOnCanvas(canvas, borneMin, borneMax, 'green', fPlusG);
 
-    await drawFindRacines(canvas, borneMin, borneMax, 'pink', f1);
+    if (lambda != 0)
+        findRacines(canvas, borneMin, borneMax, 'pink');
+
+    ctx.resetTransform(); // restore transform
 }
 
+/**
+ * @brief This function draws the X and Y axis.
+ *
+ * @param {Element} canvas
+ * @param {Number} unitInPixels
+ */
 function drawAxis(canvas, unitInPixels = 1) {
-    if (!canvas.getContext) { return; }
+    if (!canvas.getContext) return;
 
     const ctx = canvas.getContext('2d');
     ctx.strokeStyle = "black";
@@ -33,6 +55,7 @@ function drawAxis(canvas, unitInPixels = 1) {
 
     ctx.beginPath();
     let w = canvas.width;
+
     // X AXIS
     ctx.moveTo(0, w / 2);
     ctx.lineTo(w, w / 2);
@@ -43,7 +66,7 @@ function drawAxis(canvas, unitInPixels = 1) {
 
     let dec = unitInPixels;
 
-    for (let i = -canvas.width + dec; i < canvas.width - dec; i += dec) {
+    for (let i = -w + dec; i < w - dec; i += dec) {
         ctx.moveTo(i, w / 2 - 5);
         ctx.lineTo(i, w / 2 + 5);
     }
@@ -66,7 +89,16 @@ function drawAxis(canvas, unitInPixels = 1) {
     ctx.stroke();
 }
 
-async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f) {
+/**
+ * @brief This function draws the function passed in parameter.
+ * 
+ * @param {Element} canvas 
+ * @param {Number} borneMin 
+ * @param {Number} borneMax 
+ * @param {String} lineColor 
+ * @param {Function} funct 
+ */
+function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, funct) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
     borneMin *= unitInPixels;
@@ -74,159 +106,198 @@ async function drawFunctionOnCanvas(canvas, borneMin, borneMax, lineColor, f) {
 
     const ctx = canvas.getContext('2d');
 
-    let decX = canvas.width / 2;
-    let decY = canvas.height / 2;
     // set line stroke and line width
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 1;
 
     let oldX = borneMin;
-    let oldY = f(oldX / unitInPixels) * unitInPixels;
+    let oldY = funct(oldX / unitInPixels) * unitInPixels;
 
     for (let x = borneMin; x < borneMax; x += 1) {
-        let y = f(x / unitInPixels) * unitInPixels;
+        let y = funct(x / unitInPixels) * unitInPixels;
         ctx.beginPath();
-        ctx.moveTo(oldX + decX, oldY + decY);
-        ctx.lineTo(x + decX, y + decY);
+        ctx.moveTo(oldX, oldY);
+        ctx.lineTo(x, y);
         ctx.stroke();
         oldX = x;
         oldY = y;
-        // await sleep(0.01);
     }
 }
 
-async function drawFindRacines(canvas, borneMin, borneMax, lineColor, f) {
+/**
+ * @brief This function finds the zeros of a function.
+ * 
+ * @param {Element} canvas 
+ * @param {Number} borneMin 
+ * @param {Number} borneMax 
+ * @param {String} lineColor 
+ */
+function findRacines(canvas, borneMin, borneMax, lineColor) {
     unitInPixels = canvas.width / (borneMax - borneMin);
 
-    borneMin *= unitInPixels;
-    borneMax *= unitInPixels;
+    let startX = borneMin * unitInPixels;
+    let stopX = borneMax * unitInPixels;
+    let i = startX;
 
-    const ctx = canvas.getContext('2d');
+    let racinesArray = [];
 
-    let decX = canvas.width / 2;
-    let decY = canvas.height / 2;
-    // set line stroke and line width
+    while (i < stopX) {
+        let result = findRacine(i, unitInPixels, 1000);
+
+        if (result[0]) {
+            if (!racinesArray.includes(result[1])) {
+                drawRacine(canvas, i, unitInPixels, lineColor);
+                racinesArray.push(result[1]);
+            }
+        }
+
+        i++;
+    }
+
+    $("result").innerText = "Zéro(s) de la fonction : \n\n";
+    let counter = 0;
+
+    $("result").innerText += racinesArray.map(el => el = `X${counter++} : ${el / unitInPixels}`).join('\n');
+}
+
+/**
+ * @brief This function draws the geometrical resolution.
+ * 
+ * @param {Element} canevas 
+ * @param {Number} startX 
+ * @param {Number} unitInPixels 
+ * @param {String} lineColor 
+ */
+function drawRacine(canevas, startX, unitInPixels, lineColor) {
+    const ctx = canevas.getContext('2d');
+
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 1;
 
-    let oldX = borneMin;
-    let oldY = fPlusG(borneMin);
+    let oldX = startX;
+    let oldY = fPlusG(startX / unitInPixels) * unitInPixels;
+
+    let x = oldY;
+    let y = x;
+
     let count = 0;
-    let x = borneMin + 1;
-    let y = 0;
-    while (x < borneMax) {
-        // console.log("fPlusG("+x/ unitInPixels+") = " + fPlusG(x/ unitInPixels));
-        // console.log("g("+x/ unitInPixels+") = " + g(x/ unitInPixels));
-        if (fPlusG(x / unitInPixels) > g(x / unitInPixels)) {
-            // console.log("Au-dessus");
-            ctx.strokeStyle = 'pink';
-            // F(X)
-            y = g(x / unitInPixels) * unitInPixels;
-            ctx.beginPath();
-            ctx.moveTo(oldX + decX, oldY + decY);
-            ctx.lineTo(x + decX, y + decY);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
 
-            await sleep(100);
+    ctx.beginPath();
+    ctx.moveTo(oldX, oldY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
 
-            // G(X)
-            y = fPlusG(x / unitInPixels) * unitInPixels;
-            ctx.beginPath();
-            ctx.moveTo(oldX + decX, oldY + decY);
-            ctx.lineTo(x + decX, y + decY);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
-            count++;
+    while (Math.abs(oldX - x) > 0.01 && count < 100) {
+        oldX = x
+        oldY = y;
 
-            x = g(x / unitInPixels) * unitInPixels;
-            x = y;
-            if (Math.abs(oldX - x) < 0.00001) {
-                ctx.strokeStyle = 'cyan';
-                ctx.beginPath();
-                ctx.moveTo(oldX + decX, y + decY);
-                ctx.lineTo(oldX + decX, decY);
-                ctx.stroke();
-                console.log("Racine : " + x / unitInPixels);
-                x += unitInPixels;
-            }
+        y = fPlusG(x / unitInPixels) * unitInPixels;
 
-            await sleep(100);
-        } else {
-            x += unitInPixels;
-            oldX = x;
-            y = fPlusG(x / unitInPixels) * unitInPixels;
-            oldY = y;
-        }
+        ctx.strokeStyle = lineColor;
+        ctx.beginPath();
 
-        if (count > 1000) {
-            console.log("Counter max reached");
-            return;
-        }
-    }
+        ctx.moveTo(oldX, oldY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
 
-    oldX = borneMax;
-    oldY = fPlusG(borneMax);
-    count = 0;
-    x = borneMax - 1;
-    y = 0;
-    while (x > borneMin) {
-        if (g(x / unitInPixels) > fPlusG(x / unitInPixels)) {
-            console.log("test");
-            // console.log("Au-dessus");
-            ctx.strokeStyle = 'orange';
-            // F(X)
-            y = g(x / unitInPixels) * unitInPixels;
-            ctx.beginPath();
-            ctx.moveTo(oldX + decX, oldY + decY);
-            ctx.lineTo(x + decX, y + decY);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
+        oldX = x;
+        oldY = y;
+        x = y;
 
-            await sleep(100);
+        ctx.moveTo(oldX, oldY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
 
-            // G(X)
-            y = fPlusG(x / unitInPixels) * unitInPixels;
-            ctx.beginPath();
-            ctx.moveTo(oldX + decX, oldY + decY);
-            ctx.lineTo(x + decX, y + decY);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
-            count++;
-
-            x = g(x / unitInPixels) * unitInPixels;
-            x = y;
-            if (Math.abs(oldX - x) < 0.00001) {
-                ctx.strokeStyle = 'cyan';
-                ctx.beginPath();
-                ctx.moveTo(oldX + decX, y + decY);
-                ctx.lineTo(oldX + decX, decY);
-                ctx.stroke();
-                console.log("Racine : " + x / unitInPixels);
-                x -= unitInPixels;
-            }
-
-            await sleep(100);
-        }
         count++;
-        if (count > 1000) return;
     }
+
+    ctx.strokeStyle = 'cyan';
+    ctx.beginPath();
+    ctx.moveTo(oldX, y);
+    ctx.lineTo(oldX, 0);
+    ctx.stroke();
 }
 
+/**
+ * @brief This function try to find if a function has a zero from a Xo (startX).
+ * 
+ * @param {Number} startX 
+ * @param {Number} unitInPixels 
+ * @param {Number} itermax 
+ * 
+ * @returns {Array<Boolean, Number>} If a zero is find the Boolean is true and the number is the Xo.
+ */
+function findRacine(startX, unitInPixels, itermax) {
+    let oldX = startX;
+    let oldY = fPlusG(startX / unitInPixels) * unitInPixels;
+
+    let x = oldY;
+    let y = x;
+
+    let count = 0;
+
+    while (count < itermax) {
+        oldX = x
+        oldY = y;
+
+        y = fPlusG(x / unitInPixels) * unitInPixels;
+
+        oldX = x;
+        oldY = y;
+        x = y;
+
+        if (oldX == x) { // COMPUTER EPSILON
+            return [true, x];
+        }
+
+        count++;
+    }
+
+    return [false, 0];
+}
+
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function fPlusG(x) {
-    return phi * f1(x) + g(x);
+    return x + (lambda * Math.abs(f(x)));
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function g(x) {
     return x;
 }
 
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
 function f1(x) {
-    return -x / 2 + 1; //  Math.sin(x) - (x/13);
+    return Math.sin(x) - (x / 13);
+}
+
+/**
+ * @brief Return the result of the function for x.
+ * 
+ * @param {Number} x 
+ * 
+ * @returns {Number}
+ */
+function f2(x) {
+    return x / (1 - (x * x));
 }
 
 /**

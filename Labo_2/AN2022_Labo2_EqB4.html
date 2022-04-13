@@ -2,7 +2,7 @@
 
 <head lang="fr">
     <meta charset="UTF-8">
-    <title>AN2022_Labo1_EqB4</title>
+    <title>AN2022_Labo2_EqB4</title>
     <script type="text/javascript" src="script.js"></script>
 </head>
 
@@ -18,20 +18,30 @@
     <p>Date : 17.03.2022</p>
     <hr>
 
+    <label for="function">Choose a function:</label>
+
+    <select name="function" id="function_select" onchange="setup()">
+      <option value="0" selected="selected">Math.sin(x) - (x / 13)</option>
+      <option value="1">x / (1 - (x * x))</option>
+    </select>
+
+    <br>
+    <br>
+
     <canvas id="canvas" height="500" width="500">
     </canvas>
 
     <br>
     <label>Borne min : </label>
     <input type="number" max="-1" min="-100" value="-10" step="1" id="borneMin" onchange="setup()">
-    
+
     <label>Borne max : </label>
     <input type="number" min="1" max="100" value="10" step="1" id="borneMax" onchange="setup()">
 
-    <label>Phi : </label>
-    <input type="number" min="-5" max="5" value="1" step="1" id="phi" onchange="setup()">
+    <label>Lambda : </label>
+    <input type="number" min="-5" max="5" value="0.5" step="0.1" id="lambda" onchange="setup()">
 
-    <br>
+    <hr>
 
     <div id="result"></div>
 </body>
