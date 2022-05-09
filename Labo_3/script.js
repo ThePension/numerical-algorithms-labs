@@ -336,12 +336,12 @@ class GaussSystem {
             list += '<li>';
 
             for (let col = 0; col < this.#nbColumns - 1; col++) {
-                const value = (this.#matrix[row][col]).toFixed(2);
+                const value = (this.#initialSystem[row][col]).toFixed(2);
 
                 list += `${(value < 0 ? "" : "+") + value}x<sub>${col + 1}</sub> `;
             }
 
-            list += ` = ${(this.#matrix[row][this.#nbColumns - 1]).toFixed(2)}</li>`;
+            list += ` = ${(this.#initialSystem[row][this.#nbColumns - 1]).toFixed(2)}</li>`;
         }
 
         list += '</ul>';
