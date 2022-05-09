@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<head lang="fr">
+    <meta charset="UTF-8">
+    <title>AN2022_Labo3_EqB4</title>
+    <script type="text/javascript" src="script.js"></script>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 30%;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        sub {
+            vertical-align: sub;
+            font-size: medium;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Labo3</h1>
+    <p>Équipe 4 :</p>
+    <ul>
+        <li>Nicolas Aubert</li>
+        <li>Lucas Gosteli</li>
+        <li>Vincent Jeannin</li>
+        <li>Théo Vuilliomenet</li>
+    </ul>
+    <p>Date : 03.05.2022</p>
+    <hr>
+
+    <label for="file">Choose a file :</label>
+    <input type="file" name="file" id="file" accept="application/JSON" onchange="readFile(event)">
+    <br>
+    <label id="info" style="font-style: italic;"></label>
+
+    <br>
+    <hr>
+
+    <h2>Equation System</h2>
+
+    <button onclick="displayButton()">Display System</button>
+    <button onclick="resolveButton()">Resolve System</button>
+
+    <br><br>
+
+    <label id="display"></label><br><br>
+    <div id="result"></div>
+</body>
