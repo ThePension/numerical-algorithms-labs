@@ -40,6 +40,7 @@ async function readFile(event) {
         const matrixB = jsonObj.B;
 
         const labelInfo = $('info');
+        const display = $('display');
         const result = $('result');
 
         if (!size || !matrixA || !matrixB) {
@@ -47,6 +48,7 @@ async function readFile(event) {
         }
 
         labelInfo.innerText = 'System loaded';
+        display.innerText = '';
         result.innerHTML = null;
 
         equationSystem = new GaussSystem(size, matrixA, matrixB);
