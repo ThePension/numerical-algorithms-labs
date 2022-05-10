@@ -157,18 +157,30 @@ class GaussSystem {
 
         this.#elapsedTime = null;
 
+
+        let tmpMatrix = [];
         for (let row = 0; row < size; row++) {
-            this.#matrix.push(new Array());
+            tmpMatrix.push(new Array());
 
             for (let col = 0; col < size; col++) {
-                this.#matrix[row].push(matrixA[row * size + col]);
+                tmpMatrix[row].push(matrixA[row * size + col]);
             }
 
-            this.#matrix[row][size] = matrixB[row];
+            tmpMatrix[row][size] = matrixB[row];
         }
 
+
+        /* fill the matrix with the values of the temporary matrix.
+        Float64Array are stupidly fast compare to standard array */
+        this.#matrix = new ArrayBuffer(tmpMatrix.length);
+        tmpMatrix.forEach((row, i) => {
+            this.#matrix[i] = Float64Array.from(row);
+        });
+
+        tmpMatrix.length = 0;
+
         /* Deep copy of array */
-        this.#initialSystem = [...this.#matrix.map(row => [...row])];
+        this.#initialSystem = [...tmpMatrix.map(row => [...row])];
     }
 
     /* * * * * * * * * *\
@@ -357,14 +369,14 @@ class GaussSystem {
     resolve() {
         if (this.#solved) return window.alert('The system has already been solved\nHere\'s the previous result');
 
-        const startTime = new Date();
+        const startTime = Date.now();
 
         this.#runGaussEliminationAlgorithm();
         this.#solve();
 
-        const endTime = new Date();
+        const endTime = Date.now();
 
-        this.#elapsedTime = endTime.getTime() - startTime.getTime();
+        this.#elapsedTime = endTime - startTime;
         this.#solved = true;
     }
 }
