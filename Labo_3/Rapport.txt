@@ -1,0 +1,36 @@
+**********************************************************************
+* Nom du cours : Mathématiques spécifiques II (Algorithmes numériques)
+* Contexte : Labo3
+* Date : 03.05.2022
+*
+* Équipe : 
+*  - Nicloas Aubert
+*  - Lucas Gosteli
+*  - Vincent Jeannin
+*  - Théo Vuilliomenet
+**********************************************************************
+
+Contexte
+========
+Danc le cadre de ce labo 3, nous avons été amenés à résoudre un système d'équations linéaires.
+Nous avons étudié 3 méthodes de résolution de systèmes linéaires : 
+    - La méthode de Gauss
+    - La méthode de Cramer
+    - La méthode par Subsitution
+
+
+
+
+Méthodes
+========
+
+
+Conclusion
+==========
+
+
+Références
+==========
+- 
+- 
+- 
