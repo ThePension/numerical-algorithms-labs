@@ -4,7 +4,7 @@
 * Date : 03.05.2022
 *
 * Équipe : 
-*  - Nicloas Aubert
+*  - Nicolas Aubert
 *  - Lucas Gosteli
 *  - Vincent Jeannin
 *  - Théo Vuilliomenet
@@ -12,7 +12,7 @@
 
 Contexte
 ========
-Danc le cadre de ce labo 3, nous avons été amenés à résoudre un système d'équations linéaires.
+Danc le cadre de ce troisième laboratoire, nous avons été amenés à résoudre un système d'équations linéaires.
 Nous avons étudié 3 méthodes de résolution de systèmes linéaires : 
     - La méthode de Gauss;
     - La méthode de Cramer;
@@ -28,9 +28,9 @@ Méthodes
 ========
 Un des buts principaux du labo était la rapidité de résolution. Nous avons donc chercher à implémenter un algorithme simple mais efficace.
 Pour ce faire, nous avons cherché un pseudo-code déjà optimisé sur le web pour éviter toute opération superflue.
-Par la suite, nous avons vérifié que notre algorithme fonctionnait en vérifiant manuellement la résolution d'un petit calcul matriciel.
+Par la suite, nous avons vérifié que notre algorithme fonctionnait correctement en vérifiant manuellement la résolution d'un petit calcul matriciel.
 Nous pouvons donc en déduire que la résolution d'un calcul plus conséquent devrait lui aussi être juste.
-Nous avons aussi implémenté une méthode qui permette de capturé le temps que prends notre algorithme pour faire ses calculs.
+Nous avons aussi implémenté une méthode permettant de capturer le temps que prend notre algorithme pour faire ses calculs.
 
 Conclusion
 ==========
