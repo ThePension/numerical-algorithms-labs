@@ -146,6 +146,8 @@ class GaussSystem {
      * @param {Array<Number>} matrixB The matrix B
      */
     constructor(size, matrixA, matrixB) {
+        this.#initialSystem = [];
+
         this.#matrix = [];
         this.#solutions = [];
 
@@ -157,7 +159,6 @@ class GaussSystem {
 
         this.#elapsedTime = null;
 
-        this.#initialSystem = [];
         for (let row = 0; row < size; row++) {
             this.#initialSystem.push(new Array());
 
