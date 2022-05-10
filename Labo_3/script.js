@@ -169,7 +169,7 @@ class GaussSystem {
             this.#initialSystem[row][size] = matrixB[row];
         }
 
-        /* Fill the matrix with the values of the temporary matrix.
+        /* Fill the matrix with the values of the initial system matrix.
         Float64Array are stupidly fast compare to standard array */
         this.#matrix = new ArrayBuffer(this.#initialSystem.length);
         this.#initialSystem.forEach((row, i) => {
