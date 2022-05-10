@@ -157,30 +157,23 @@ class GaussSystem {
 
         this.#elapsedTime = null;
 
-
-        let tmpMatrix = [];
+        this.#initialSystem = [];
         for (let row = 0; row < size; row++) {
-            tmpMatrix.push(new Array());
+            this.#initialSystem.push(new Array());
 
             for (let col = 0; col < size; col++) {
-                tmpMatrix[row].push(matrixA[row * size + col]);
+                this.#initialSystem[row].push(matrixA[row * size + col]);
             }
 
-            tmpMatrix[row][size] = matrixB[row];
+            this.#initialSystem[row][size] = matrixB[row];
         }
 
-
-        /* fill the matrix with the values of the temporary matrix.
+        /* Fill the matrix with the values of the temporary matrix.
         Float64Array are stupidly fast compare to standard array */
-        this.#matrix = new ArrayBuffer(tmpMatrix.length);
-        tmpMatrix.forEach((row, i) => {
+        this.#matrix = new ArrayBuffer(this.#initialSystem.length);
+        this.#initialSystem.forEach((row, i) => {
             this.#matrix[i] = Float64Array.from(row);
         });
-
-        tmpMatrix.length = 0;
-
-        /* Deep copy of array */
-        this.#initialSystem = [...tmpMatrix.map(row => [...row])];
     }
 
     /* * * * * * * * * *\
