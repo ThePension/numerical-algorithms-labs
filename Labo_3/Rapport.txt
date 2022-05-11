@@ -12,32 +12,33 @@
 
 Contexte
 ========
-Danc le cadre de ce troisième laboratoire, nous avons été amenés à résoudre un système d'équations linéaires.
+Dans le cadre de ce troisième laboratoire, nous avons été amenés à résoudre un système d'équations linéaires.
 Nous avons étudié 3 méthodes de résolution de systèmes linéaires : 
     - La méthode de Gauss;
     - La méthode de Cramer;
     - La méthode par Subsitution.
 
-La méthode qui nous a été imposée est celle de Gauss car c'est elle qui se prête le mieux à une implémentation informatique viable.
-Pour tester notre implémentation nous devions :
+La méthode qui nous a été imposée est celle de Gauss, car c'est elle qui se prête le mieux à une implémentation informatique viable.
+Pour tester notre implémentation, nous devions :
     - Résoudre la multiplication de deux matrices de taille 400;
     - Afficher le développement du système linéaire;
     - Déterminer les solutions et les afficher.
 
 Méthodes
 ========
-Un des buts principaux du labo était la rapidité de résolution. Nous avons donc chercher à implémenter un algorithme simple mais efficace.
+Un des buts principaux du labo était la rapidité de résolution. Nous avons donc cherché à implémenter un algorithme simple, mais efficace.
 Pour ce faire, nous avons cherché un pseudo-code déjà optimisé sur le web pour éviter toute opération superflue.
 Par la suite, nous avons vérifié que notre algorithme fonctionnait correctement en vérifiant manuellement la résolution d'un petit calcul matriciel.
-Nous pouvons donc en déduire que la résolution d'un calcul plus conséquent devrait lui aussi être juste.
+Nous pouvons donc en déduire que la résolution d'un calcul plus conséquent devrait elle aussi être juste.
 Nous avons aussi implémenté une méthode permettant de capturer le temps que prend notre algorithme pour faire ses calculs.
 
 Conclusion
 ==========
 Notre programme est capable d'effectuer la multiplication matricielle et d'en afficher les résultats.
-Lorsque nous lançons la résolution du système à 400 équations, le temps moyen est d'environ 74 ms.
+Lorsque nous lançons la résolution du système à 400 équations, le temps moyen est d'environ 50 ms.
 Une amélioration envisageable serait de paralléliser les calculs pour améliorer la vitesse résolution.
 
 Références
 ==========
 - Wikipédia : Gaussian elimination, URL : https://en.wikipedia.org/wiki/Gaussian_elimination
+
