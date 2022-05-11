@@ -35,10 +35,11 @@ Nous avons aussi implémenté une méthode permettant de capturer le temps que p
 Conclusion
 ==========
 Notre programme est capable d'effectuer la multiplication matricielle et d'en afficher les résultats.
-Lorsque nous lançons la résolution du système à 400 équations, le temps moyen est d'environ 50 ms.
+Lorsque nous lançons la résolution du système à 400 équations, le temps moyen est d'environ 30 ms.
 Une amélioration envisageable serait de paralléliser les calculs pour améliorer la vitesse résolution.
 
 Références
 ==========
 - Wikipédia : Gaussian elimination, URL : https://en.wikipedia.org/wiki/Gaussian_elimination
-
+- Mozilla Hacks : Rapidité JavaScript, URL : https://hacks.mozilla.org/2020/11/warp-improved-js-performance-in-firefox-83/
+- W3Schools : JSON parsing, URL : https://www.w3schools.com/js/js_json_parse.asp
