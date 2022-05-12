@@ -46,6 +46,28 @@ function submit_conversion() {
 }
 
 /**
+ * 
+ */
+function submit_decode(){
+    const target = $("binary_value").value.split('').map(b => b = parseInt(b));
+    
+    if(target.filter(b => Math.abs(b) > 1).length > 0)
+    {
+        $('binary_code').innerText = `Binary input not valid...`;
+        return;
+    }
+
+    if (target.length < 1)
+        return window.alert("Veuillez entrer des nombres");
+
+    const float_code = decode_to_float(target);
+    const float_number = encode_to_float(float_code, target.length);
+
+    $('binary_code').innerText = `Code binaire après encodage : ${float_number.join('')}`;
+    $('binary_decode').innerText = `Code float après décodage : ${float_code}`;
+}
+
+/**
  * @brief Process the user input (two number), encode the numbers, add them, and then display the number
  */
 function submit_addition() {

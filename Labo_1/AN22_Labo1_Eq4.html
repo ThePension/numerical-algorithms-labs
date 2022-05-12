@@ -30,11 +30,14 @@
     <h2>Conversion</h2>
 
     <label for="target_value">Nombre à approximer :</label>
-    <input id="target_value" name="target_value" required>
-
+    <input id="target_value" name="target_value">
     <br>
+    <label for="binary_value">Binaire à décoder :</label>
+    <input id="binary_value" name="binary_value">
 
-    <button onclick="submit_conversion()">Convertir</button>
+    <br><br>
+
+    <button onclick="submit_conversion()">Real --> Binary</button><button onclick="submit_decode()">Binary --> Real</button>
 
     <hr> Résultat conversion : <br><br>
     <div id="binary_code"></div>
