@@ -1,0 +1,55 @@
+**********************************************************************
+* Nom du cours : Mathématiques spécifiques II
+* Contexte : Projet
+* Date : 05.06.2022
+*
+* Équipe : 
+*  - Nicolas Aubert ;
+*  - Lucas Gosteli ;
+*  - Vincent Jeannin ;
+*  - Théo Vuilliomenet.
+**********************************************************************
+
+/!\ Ce qui est entre "" est à améliorer car soit pas juste, soit trop subjectif, soit pas technique, soit pas ouf /!\
+
+Contexte
+========
+Dans le cadre de notre projet de mathématiques spécifiques 2, nous avons choisi de nous intéresser "aux équations chaotiques".
+Pour ce faire, nous avons choisi d'utiliser l'exemple du double pendule.
+Mais, pour ajouter une difficulté et de l'originalité, nous remplacerons les tiges rigides et droites des pendules par des ressorts.
+Il faudra donc mettre en place "les équations différentielles physiques" nécessaires afin de tous les paramètres de notre système.
+Il y aura notamment la position, la vitesse et l'accélération, mais aussi l'allongement des ressorts "ainsi que les forces."
+Finalement, afin d'illustrer au mieux "le résultat chaotique", nous tracerons le graphe de la position des masses attachées aux ressorts.
+
+
+Méthodes
+========
+Pour ce qui est du dessin des deux ressorts, nous avons utilisé p5.js qui est une libraire nous permettant de simplifier le dessin en javascript.
+
+"Afin de simplifier les explications, voici un glossaire de notre système :
+ - masse : représente non pas la masse totale du système mais la masse de la boule attachée à un ressort ;
+ - "
+
+Voici le déroulement de notre projet :
+ - 1) Identifier tous les paramètres de notre système ;
+ - 2) Dessiner les deux ressorts de manière statique ;
+ - 3) Ajouter la gestion du drag and drop sur les masses ;
+ - 4) "Mise en place de la physique du premier ressort" ;
+ - 5) Ajouter "les équations différentielles permettant de calculer les variables des deux ressorts/masses" ;
+ - 6) Dessiner le graphe de la position de la masse à l'extrêmité du système.
+
+TODO : Étoffer
+TODO : Parler de la méthode Runge Kutta
+TODO : Parler des équations chaotiques
+
+
+Conclusion
+==========
+Comme attendu, le graphe de la position du deuxième ressort "est le fruit d'une équation chaotique."
+TODO : Étoffer
+
+
+Références
+==========
+- https://www.myphysicslab.com/springs/double-2d-spring-en.html
+- https://p5js.org/examples/
