@@ -45,7 +45,9 @@ TODO : Parler des équations chaotiques
 
 Conclusion
 ==========
-Comme attendu, le graphe de la position du deuxième ressort "est le fruit d'une équation chaotique."
+Notre projet permet de simuler l'évolution, selon la méthode de Runge Kutta, du comportement de deux masses attachées par des ressorts.
+De plus, la position bidimensionnelle d'une des masses du système est tracée en direct dans un graphe.
+Comme attendu, ce dernier, illustre un "résultat chaotique".
 TODO : Étoffer
 
 
@@ -53,3 +55,4 @@ Références
 ==========
 - https://www.myphysicslab.com/springs/double-2d-spring-en.html
 - https://p5js.org/examples/
+- https://thecodingtrain.com/CodingChallenges/160-spring-forces.html
