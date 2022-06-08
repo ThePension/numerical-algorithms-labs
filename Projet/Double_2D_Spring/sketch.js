@@ -42,8 +42,10 @@ let S1;
 let L1 = 100;
 let a1x = 0;
 let a1y = 0;
-let f1x;
-let f1y;
+let v1x = 0;
+let v1y = 0;
+let f1x = 0;
+let f1y = 0;
 
 // First spring constant
 let m1 = 1;
@@ -53,8 +55,11 @@ let S2;
 let L2 = 100;
 let a2x = 0;
 let a2y = 0;
-let f2x;
-let f2y;
+let v2x = 0;
+let v2y = 0;
+let f2x = 0;
+let f2y = 0;
+
 
 // Second spring constant
 let m2 = 1;
@@ -99,12 +104,6 @@ function setup() {
 /* ==================================================== *\
 |*                    FORCE COMPUTE                     *|
 \* ==================================================== */
-
-let v1x = 0;
-let v1y = 0;
-
-let v2x = 0;
-let v2y = 0;
 
 function computeForces() {
     L1 = Math.sqrt(s1x ** 2 + s1y ** 2);
@@ -209,25 +208,24 @@ function drawSprings(vector0, vector1, vector2) {
     stroke(spring_line_color);
     line(0, 0, vector1.x, vector1.y);
 
+    // Draw the second spring
     translate(vector1.x, vector1.y);
+    stroke(spring_line_color);
+    line(0, 0, vector2.x, vector2.y);
+
+    // Draw the first ball
     stroke(spring_round_color);
     fill(spring_round_color);
     circle(0, 0, 2 * square_side);
 
-    // Draw the second spring
-
-    stroke(spring_line_color);
-    line(0, 0, vector2.x, vector2.y);
-
+    // Draw the second ball
     translate(vector2.x, vector2.y);
     stroke(spring_round_color2);
     fill(spring_round_color2);
     circle(0, 0, 2 * square_side);
 
     // Go back to the top left corner of the canevas
-    translate(-vector2.x, -vector2.y);
-    translate(-vector1.x, -vector1.y);
-    translate(-vector0.x, -vector0.y);
+    resetMatrix();
 }
 
 // remeber the old position to help draw the graph
@@ -253,6 +251,8 @@ function drawGraph() {
 
     oldx = s1x + s2x;
     oldy = s1y + s2y;
+
+    resetMatrix();
 }
 
 /* ==================================================== *\
