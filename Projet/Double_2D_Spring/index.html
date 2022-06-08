@@ -1,30 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-snap-type: y proximity;">
 
 <head>
     <script src="p5.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
-
+    <title>Projet - double ressort 2D</title>
 </head>
 
-<body>
-    <h1>Projet - double ressort 2D</h1>
-    <hr>
+<body style="margin: 0;">
+    <main style="scroll-snap-align: start;">
+        <h1 style="margin-top: 0;">Projet - double ressort 2D</h1>
+        <hr style="scroll-snap-align: start;">
 
-    <main>
+        <section>
+            <button id="graph_clear" onclick="graph_clear()">Chart clear</button>
+            <button id="graph_clear" onclick="simulation_reset()">reset</button>
+            <button id="sumulation_pause" onclick="simulation_pause()">pause</button>
+            <label id="gravity">
+                <label for="gravity">Gravity</label>
+                <output id="gravity_value" for="gravity_input">9.81</output>
+                <input id="gravity_input" type="range" min="0" max="50" step="0.01" value="9.81"
+                    oninput="simulation_gravity()">
+            </label>
+            <label id="damping">
+                <label for="damping">Damping</label>
+                <output id="damping_value" for="damping_input">0.00</output>
+                <input id="damping_input" type="range" min="0" max="1" step="0.01" value="0"
+                    oninput="simulation_damping()">
+            </label>
+            <label id="rest_length">
+                <label for="rest_length_input">Rest Length</label>
+                <input id="rest_length_input" type="number" min="1" max="1000" value="100" onchange="springs_rest_length()">
+            </label>
+            <label id="mass1">
+                <label for="mass1_input">Mass 1</label>
+                <input id="mass1_input" type="number" min="1" max="100" value="1" onchange="springs_mass1()">
+            </label>
+            <label id="mass2">
+                <label for="mass2_input">Mass 2</label>
+                <input id="mass2_input" type="number" min="1" max="100" value="1" onchange="springs_mass2()">
+            </label>
+        </section>
+        <output id="sketch"></output>
+        <section>
+            <hr style="scroll-snap-align: start;">
+            <p>Équipe 4 :</p>
+            <ul>
+                <li>Nicolas Aubert</li>
+                <li>Lucas Gosteli</li>
+                <li>Vincent Jeannin</li>
+                <li>Théo Vuilliomenet</li>
+            </ul>
+            <p>Date : 02.06.2022</p>
+        </section>
     </main>
     <script src="sketch.js"></script>
+    <script src="controls.js"></script>
 
-    <hr>
-    <p>Équipe 4 :</p>
-    <ul>
-        <li>Nicolas Aubert</li>
-        <li>Lucas Gosteli</li>
-        <li>Vincent Jeannin</li>
-        <li>Théo Vuilliomenet</li>
-    </ul>
-    <p>Date : 02.06.2022</p>
+
 
 </body>
 

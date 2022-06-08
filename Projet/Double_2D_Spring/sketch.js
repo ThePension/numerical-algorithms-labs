@@ -33,7 +33,7 @@ let square_side = 20;
 let Tx;
 let Ty;
 let R = 100;
-let b = 0.005;
+let b = 0;
 let k = 5;
 let g = 9.81;
 
@@ -59,8 +59,9 @@ let f2y;
 // Second spring constant
 let m2 = 1;
 
-// speed of the animation
-let physic_divider = 150;
+// simlation settings
+let delta_time = 1 / 200;
+let ispaused = false;
 
 // Color variables
 let spring_round_color;
@@ -83,7 +84,9 @@ let yOffset_spring2 = 0.0;
 
 function setup() {
     // Create the canevas
-    createCanvas(windowWidth, 700);
+    let canvas = createCanvas(windowWidth, windowHeight - 50);
+    canvas.parent('sketch');
+    frameRate(60);
 
     // Globals initialization
     spring_round_color = color(204, 102, 0);
@@ -92,6 +95,16 @@ function setup() {
     Tx = (3 * width / 4) - square_side / 2;
     Ty = height / 2;
 }
+
+/* ==================================================== *\
+|*                    FORCE COMPUTE                     *|
+\* ==================================================== */
+
+let v1x = 0;
+let v1y = 0;
+
+let v2x = 0;
+let v2y = 0;
 
 function computeForces() {
     L1 = Math.sqrt(s1x ** 2 + s1y ** 2);
@@ -102,34 +115,38 @@ function computeForces() {
     S2 = L2 - R;
 
     // calculate the acceleration of the second spring
-    a1x += -(k / m1) * S1 * (s1x / L1) - (b / m1) * a1x + (k / m1) * S2 * (s2x / L2);
-    a1y += -(k / m1) * S1 * (s1y / L1) - (b / m1) * a1y + (k / m1) * S2 * (s2y / L2) + g;
+    a1x = -k * S1 * (s1x / L1) - b * v1x + k * S2 * (s2x / L2);
+    a1y = -k * S1 * (s1y / L1) + g * m1 - b * (v1y - g * m1) + k * S2 * (s2y / L2);
 
     // calculate the force applied on spring 2
-    f1x = a1x * m1;
-    f1y = a1y * m1;
+    f1x = a1x * delta_time;
+    f1y = a1y * delta_time;
 
-    // move the ball according to the force applyed on spring 1
-    s1x += f1x / physic_divider;
-    s1y += f1y / physic_divider;
-    s2x -= f1x / physic_divider;
-    s2y -= f1y / physic_divider;
+    // calculate the velocity of the ball after a delta time
+    v1x += f1x;
+    v1y += f1y;
 
-    // since the position of the ball is not the same as the position of the spring, we need recalculate the length of the spring
-    L2 = Math.sqrt(s2x ** 2 + s2y ** 2);
-    S2 = L2 - R;
+    // move the ball according to the force applyed on spring 1 since spring 2 is relative position to spring 1 we negate the value
+    s1x += v1x;
+    s1y += v1y;
+    s2x -= v1x;
+    s2y -= v1y;
 
     // calculate the acceleration of the second spring
-    a2x += -(k / m2) * S2 * (s2x / L2) - (b / m2) * a2x;
-    a2y += -(k / m2) * S2 * (s2y / L2) - (b / m2) * a2y + g;
+    a2x = -k * S2 * (s2x / L2) - b * v2x;
+    a2y = -k * S2 * (s2y / L2) + g * m2 - b * (v2y - g * m2);
 
     // calculate the force applied on spring 2
-    f2x = a2x * m2;
-    f2y = a2y * m2;
+    f2x = a2x * delta_time * m2;
+    f2y = a2y * delta_time * m2;
+
+    // calculate the velocity of the ball after a delta time
+    v2x += f2x;
+    v2y += f2y;
 
     // move the ball according to the force applyed on spring 2
-    s2x += f2x / physic_divider;
-    s2y += f2y / physic_divider;
+    s2x += v2x;
+    s2y += v2y;
 
     // guard if the ball is out of the canvas
     if (Math.abs(s2x + s1x) > (width / 4) - 2 * square_side || Math.abs(s2y + s1y) > (height / 2) - 2 * square_side) {
@@ -137,6 +154,10 @@ function computeForces() {
         a1y = 0;
         a2x = 0;
         a2y = 0;
+        v1x = 0;
+        v1y = 0;
+        v2x = 0;
+        v2y = 0;
     }
 }
 
@@ -163,7 +184,7 @@ function draw() {
     // Test if the mouse is over one of the springs
     handleMouseOverSprings();
 
-    if (!locked_spring1 && !locked_spring2) {
+    if (!ispaused && !locked_spring1 && !locked_spring2) {
         computeForces();
     }
 
@@ -176,8 +197,10 @@ function draw() {
     drawSprings(vector_base_square, vector_spring_1, vector_spring_2);
 
     // Draw White rectangle where the graph will be
+    if (!ispaused) {
+        drawGraph();
+    }
 
-    drawGraph();
 }
 
 function drawSprings(vector0, vector1, vector2) {
@@ -207,7 +230,7 @@ function drawSprings(vector0, vector1, vector2) {
     translate(-vector0.x, -vector0.y);
 }
 
-
+// remeber the old position to help draw the graph
 let oldx;
 let oldy;
 
@@ -223,7 +246,10 @@ function drawGraph() {
 
     stroke(spring_line_color);
     fill(spring_line_color);
-    line(oldx, oldy, s1x + s2x, s1y + s2y);
+
+    if (oldx != null && oldy != null) {
+        line(oldx, oldy, s1x + s2x, s1y + s2y);
+    }
 
     oldx = s1x + s2x;
     oldy = s1y + s2y;
@@ -263,41 +289,38 @@ function handleMouseOverSprings() {
 function mousePressed() {
     if (over_spring1) {
         locked_spring1 = true;
+        xOffset_spring1 = mouseX - s1x;
+        yOffset_spring1 = mouseY - s1y;
     } else {
         locked_spring1 = false;
     }
 
     if (over_spring2) {
         locked_spring2 = true;
+        xOffset_spring2 = mouseX - s2x;
+        yOffset_spring2 = mouseY - s2y;
     } else {
         locked_spring2 = false;
     }
-
-    xOffset_spring1 = mouseX - s1x;
-    yOffset_spring1 = mouseY - s1y;
-    xOffset_spring2 = mouseX - s2x;
-    yOffset_spring2 = mouseY - s2y;
 }
 
 function mouseDragged() {
-
     if (locked_spring1) {
         s1x = mouseX - xOffset_spring1;
         s1y = mouseY - yOffset_spring1;
-
-
     }
 
     if (locked_spring2) {
         s2x = mouseX - xOffset_spring2;
         s2y = mouseY - yOffset_spring2;
-
     }
 
-    a1x = 0;
-    a1y = 0;
-    a2x = 0;
-    a2y = 0;
+    if (locked_spring1 || locked_spring2) {
+        a1x = 0;
+        a1y = 0;
+        a2x = 0;
+        a2y = 0;
+    }
 }
 
 function mouseReleased() {
