@@ -5,20 +5,21 @@ function graph_clear() {
     rect(0, 0, width, height);
 }
 
+function simulation_pendulum_number()
+{
+    pendulum_number_value.value = parseFloat(pendulum_number_input.value).toFixed(2).padStart(5, '0');
+    pendulums_number = pendulum_number_value.value;
+    simulation_reset();
+}
+
 function simulation_reset() {
-    a1 = [0, 0];
-    a2 = [0, 0];
+    // Clear the array of pendulums
+    pendulums = [];
 
-    v1 = [0, 0];
-    v2 = [0, 0];
-
-    s1 = [0, 100];
-    s2 = [-70, 90];
-
-    oldx = null;
-    oldy = null;
-
-    graph_clear();
+    for(let i = 0; i < pendulums_number; i++)
+    {
+        pendulums.push(new DoublePendulum(i / 1000, color(map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255))));
+    }
 }
 
 function simulation_pause() {

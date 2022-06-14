@@ -16,6 +16,13 @@
             <button id="graph_clear" onclick="graph_clear()">Chart clear</button>
             <button id="graph_clear" onclick="simulation_reset()">reset</button>
             <button id="sumulation_pause" onclick="simulation_pause()">pause</button>
+
+            <label id="pendulum_number">
+                <label for="pendulum_number">Double pendulum number</label>
+                <output id="pendulum_number_value" for="pendulum_number_input">5</output>
+                <input id="pendulum_number_input" type="range" min="1" max="100" step="1" value="5"
+                    oninput="simulation_pendulum_number()">
+            </label>
             <label id="gravity">
                 <label for="gravity">Gravity</label>
                 <output id="gravity_value" for="gravity_input">9.81</output>
@@ -58,6 +65,7 @@
             <p>Date : 02.06.2022</p>
         </section>
     </main>
+    <script src="doublependulum.js"></script>
     <script src="sketch.js"></script>
     <script src="controls.js"></script>
 
