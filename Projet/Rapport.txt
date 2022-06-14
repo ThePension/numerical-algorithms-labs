@@ -10,45 +10,40 @@
 *  - Théo Vuilliomenet.
 **********************************************************************
 
-/!\ Ce qui est entre "" est à améliorer car soit pas juste, soit trop subjectif, soit pas technique, soit pas ouf /!\
-
 Contexte
 ========
-Dans le cadre de notre projet de mathématiques spécifiques 2, nous avons choisi de nous intéresser "aux équations chaotiques".
+Dans le cadre de notre projet de mathématiques spécifiques 2, nous avons choisi de nous intéresser aux équations chaotiques.
+Plus précisément, à une visualisation graphique d'une équation chaotique.
+
 Pour ce faire, nous avons choisi d'utiliser l'exemple du double pendule.
-Mais, pour ajouter une difficulté et de l'originalité, nous remplacerons les tiges rigides et droites des pendules par des ressorts.
-Il faudra donc mettre en place "les équations différentielles physiques" nécessaires afin de tous les paramètres de notre système.
-Il y aura notamment la position, la vitesse et l'accélération, mais aussi l'allongement des ressorts "ainsi que les forces."
-Finalement, afin d'illustrer au mieux "le résultat chaotique", nous tracerons le graphe de la position des masses attachées aux ressorts.
+Cependant, afin d'ajouter une difficulté et de l'originalité, nous remplacerons les tiges rigides des pendules par des ressorts.
+
+Après une première phase de développement, nous avons du abandonner les ressorts pour des tiges rigides.
+Ce choix est du à la complexité des calculs et au manque de connaissances sur les équations différentielles.
+En effet, toute la partie visant à simplifier les équations différentielles du deuxième ordre ne fonctionnait pas dans notre implémentation.
 
 
 Méthodes
 ========
-Pour ce qui est du dessin des deux ressorts, nous avons utilisé p5.js qui est une libraire nous permettant de simplifier le dessin en javascript.
+Premièrement, pour l'affichage du double pendule nous avons utilisé p5.js qui est une libraire nous permettant de dessiner facilement en javascript.
 
-"Afin de simplifier les explications, voici un glossaire de notre système :
- - masse : représente non pas la masse totale du système mais la masse de la boule attachée à un ressort ;
- - "
+Pour ce qui est des calculs, nous avons commencé par déterminé les équations permettant d'obtenir la position.
+Ensuite, nous avons dérivé l'équation de la position pour obtenir la vitesse et dans un second temps l'accélération.
+Ces équations ne prennent en compte que les angles des tiges avec la vertical et la longueur des tiges.
 
-Voici le déroulement de notre projet :
- - 1) Identifier tous les paramètres de notre système ;
- - 2) Dessiner les deux ressorts de manière statique ;
- - 3) Ajouter la gestion du drag and drop sur les masses ;
- - 4) "Mise en place de la physique du premier ressort" ;
- - 5) Ajouter "les équations différentielles permettant de calculer les variables des deux ressorts/masses" ;
- - 6) Dessiner le graphe de la position de la masse à l'extrêmité du système.
+Par la suite, nous avons cherché les équations différentielles qui lient l'accélération du premier pendule à celle du deuxième.
+Après cela, il a fallu simplifier ces équations afin d'obtenir une verision numérique et implémentable.
+Pour cela, nous avons utilisé la méthode de Runge-Kutta.
 
-TODO : Étoffer
-TODO : Parler de la méthode Runge Kutta
-TODO : Parler des équations chaotiques
+Une fois les équations simplifiées il ne nous manquait plus qu'à implémenter une version JS à l'aide de p5.js.
+Afin de visualiser au mieux l'aspect chaotique, nous affichons une multitude de pendule avec un décalage angulaire initial qui n'est pas visible par l'utilisateur.
 
 
 Conclusion
 ==========
-Notre projet permet de simuler l'évolution, selon la méthode de Runge Kutta, du comportement de deux masses attachées par des ressorts.
-De plus, la position bidimensionnelle d'une des masses du système est tracée en direct dans un graphe.
-Comme attendu, ce dernier, illustre un "résultat chaotique".
-TODO : Étoffer
+Notre projet permet de simuler l'évolution, selon la méthode de Runge-Kutta, du comportement du double pendule.
+Après avoir lancé une multitude de pendules avec un décalage angulaire infime, nous obtenons, comme attendu, un résultat chaotique.
+En effet, malgré un décalage initial de quelques pixels, il ne faut qu'on court lapse de temps pour que les doubles pendules évoluent différemment les uns des autres.
 
 
 Références
@@ -56,3 +51,5 @@ Références
 - https://www.myphysicslab.com/springs/double-2d-spring-en.html
 - https://p5js.org/examples/
 - https://thecodingtrain.com/CodingChallenges/160-spring-forces.html
+- https://www.myphysicslab.com/pendulum/double-pendulum-en.html
+- https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
