@@ -23,16 +23,14 @@ Variables:
 
 
 // Spring vectors composant
-let s1x = 0;
-let s1y = 100;
-let s2x = -70;
-let s2y = 90;
+let s1 = new Float64Array([0, 100]);
+let s2 = new Float64Array([-70, 90]);
 
 // Global system constant
 let square_side = 20;
 let Tx;
 let Ty;
-let R = 100;
+let R = 50;
 let b = 0;
 let k = 5;
 let g = 9.81;
@@ -40,12 +38,8 @@ let g = 9.81;
 // First spring variables
 let S1;
 let L1 = 100;
-let a1x = 0;
-let a1y = 0;
-let v1x = 0;
-let v1y = 0;
-let f1x = 0;
-let f1y = 0;
+let a1 = new Float64Array([0, 0]);
+let v1 = new Float64Array([0, 0]);
 
 // First spring constant
 let m1 = 1;
@@ -53,19 +47,15 @@ let m1 = 1;
 // Second spring variables
 let S2;
 let L2 = 100;
-let a2x = 0;
-let a2y = 0;
-let v2x = 0;
-let v2y = 0;
-let f2x = 0;
-let f2y = 0;
+let a2 = new Float64Array([0, 0]);
+let v2 = new Float64Array([0, 0]);
 
 
 // Second spring constant
 let m2 = 1;
 
 // simlation settings
-let delta_time = 1 / 200;
+let delta_time = 1 / 6;
 let ispaused = false;
 
 // Color variables
@@ -106,57 +96,49 @@ function setup() {
 \* ==================================================== */
 
 function computeForces() {
-    L1 = Math.sqrt(s1x ** 2 + s1y ** 2);
-    L2 = Math.sqrt(s2x ** 2 + s2y ** 2);
+    L1 = Math.sqrt(s1[0] ** 2 + s1[1] ** 2);
+    L2 = Math.sqrt(s2[0] ** 2 + s2[1] ** 2);
 
     // calulate the legth of the springs and the rest length
     S1 = L1 - R;
     S2 = L2 - R;
 
     // calculate the acceleration of the second spring
-    a1x = -k * S1 * (s1x / L1) - b * v1x + k * S2 * (s2x / L2);
-    a1y = -k * S1 * (s1y / L1) + g * m1 - b * (v1y - g * m1) + k * S2 * (s2y / L2);
+    a1[0] = (-k * S1 * (s1[0] / L1) - b * v1[0] + k * S2 * (s2[0] / L2)) / m1;
+    a1[1] = (-k * S1 * (s1[1] / L1) - b * v1[1] + k * S2 * (s2[1] / L2)) / m1;
 
-    // calculate the force applied on spring 2
-    f1x = a1x * delta_time;
-    f1y = a1y * delta_time;
-
-    // calculate the velocity of the ball after a delta time
-    v1x += f1x;
-    v1y += f1y;
+    // calculate the velocity applied on spring 1
+    v1[0] += 0.5 * a1[0] * delta_time ** 2;
+    v1[1] += 0.5 * a1[1] * delta_time ** 2;
 
     // move the ball according to the force applyed on spring 1 since spring 2 is relative position to spring 1 we negate the value
-    s1x += v1x;
-    s1y += v1y;
-    s2x -= v1x;
-    s2y -= v1y;
+    const dtsx = v1[0] * delta_time;
+    const dtsy = (v1[1]+m1*g) * delta_time ;
+    s1[0] += dtsx;
+    s1[1] += dtsy;
+    s2[0] -= dtsx;
+    s2[1] -= dtsy;
 
     // calculate the acceleration of the second spring
-    a2x = -k * S2 * (s2x / L2) - b * v2x;
-    a2y = -k * S2 * (s2y / L2) + g * m2 - b * (v2y - g * m2);
-
-    // calculate the force applied on spring 2
-    f2x = a2x * delta_time * m2;
-    f2y = a2y * delta_time * m2;
+    a2[0] = (-k * S2 * (s2[0] / L2) - b * v2[0]) / m2;
+    a2[1] = (-k * S2 * (s2[1] / L2) - b * v2[1]) / m2;
 
     // calculate the velocity of the ball after a delta time
-    v2x += f2x;
-    v2y += f2y;
+    v2[0] += 0.5 * a2[0] * delta_time ** 2;
+    v2[1] += 0.5 * a2[1] * delta_time ** 2;
 
     // move the ball according to the force applyed on spring 2
-    s2x += v2x;
-    s2y += v2y;
+    s2[0] += v2[0] * delta_time;
+    s2[1] += (v2[1]+m1*g) * delta_time;
 
     // guard if the ball is out of the canvas
-    if (Math.abs(s2x + s1x) > (width / 4) - 2 * square_side || Math.abs(s2y + s1y) > (height / 2) - 2 * square_side) {
-        a1x = 0;
-        a1y = 0;
-        a2x = 0;
-        a2y = 0;
-        v1x = 0;
-        v1y = 0;
-        v2x = 0;
-        v2y = 0;
+    if (Math.abs(s2[0] + s1[0]) > (width / 4) - 2 * square_side) {
+        v1 = [0, 0];
+        a1 = [0, 0];
+
+        v2 = [0, 0];
+        a2 = [0, 0];
+
     }
 }
 
@@ -188,8 +170,8 @@ function draw() {
     }
 
     // Vector creation
-    let vector_spring_1 = createVector(s1x, s1y);
-    let vector_spring_2 = createVector(s2x, s2y);
+    let vector_spring_1 = createVector(s1[0], s1[1]);
+    let vector_spring_2 = createVector(s2[0], s2[1]);
     let vector_base_square = createVector(Tx + square_side / 2, Ty + square_side / 2);
 
     // Draw the springs from the vectors
@@ -246,11 +228,11 @@ function drawGraph() {
     fill(spring_line_color);
 
     if (oldx != null && oldy != null) {
-        line(oldx, oldy, s1x + s2x, s1y + s2y);
+        line(oldx, oldy, s1[0] + s2[0], s1[1] + s2[1]);
     }
 
-    oldx = s1x + s2x;
-    oldy = s1y + s2y;
+    oldx = s1[0] + s2[0];
+    oldy = s1[1] + s2[1];
 
     resetMatrix();
 }
@@ -264,10 +246,10 @@ function handleMouseOverSprings() {
     // For now the over box are simple uncentered square
 
     if (
-        mouseX > s1x + Tx - 2 * square_side &&
-        mouseX < s1x + Tx + 2 * square_side &&
-        mouseY > s1y + Ty - 2 * square_side &&
-        mouseY < s1y + Ty + 2 * square_side
+        mouseX > s1[0] + Tx - 2 * square_side &&
+        mouseX < s1[0] + Tx + 2 * square_side &&
+        mouseY > s1[1] + Ty - 2 * square_side &&
+        mouseY < s1[1] + Ty + 2 * square_side
     ) {
         over_spring1 = true;
     } else {
@@ -275,10 +257,10 @@ function handleMouseOverSprings() {
     }
 
     if (
-        mouseX > s1x + s2x + Tx - 2 * square_side &&
-        mouseX < s1x + s2x + Tx + 2 * square_side &&
-        mouseY > s1y + s2y + Ty - 2 * square_side &&
-        mouseY < s1y + s2y + Ty + 2 * square_side
+        mouseX > s1[0] + s2[0] + Tx - 2 * square_side &&
+        mouseX < s1[0] + s2[0] + Tx + 2 * square_side &&
+        mouseY > s1[1] + s2[1] + Ty - 2 * square_side &&
+        mouseY < s1[1] + s2[1] + Ty + 2 * square_side
     ) {
         over_spring2 = true;
     } else {
@@ -289,16 +271,16 @@ function handleMouseOverSprings() {
 function mousePressed() {
     if (over_spring1) {
         locked_spring1 = true;
-        xOffset_spring1 = mouseX - s1x;
-        yOffset_spring1 = mouseY - s1y;
+        xOffset_spring1 = mouseX - s1[0];
+        yOffset_spring1 = mouseY - s1[1];
     } else {
         locked_spring1 = false;
     }
 
     if (over_spring2) {
         locked_spring2 = true;
-        xOffset_spring2 = mouseX - s2x;
-        yOffset_spring2 = mouseY - s2y;
+        xOffset_spring2 = mouseX - s2[0];
+        yOffset_spring2 = mouseY - s2[1];
     } else {
         locked_spring2 = false;
     }
@@ -306,20 +288,18 @@ function mousePressed() {
 
 function mouseDragged() {
     if (locked_spring1) {
-        s1x = mouseX - xOffset_spring1;
-        s1y = mouseY - yOffset_spring1;
+        s1[0] = mouseX - xOffset_spring1;
+        s1[1] = mouseY - yOffset_spring1;
     }
 
     if (locked_spring2) {
-        s2x = mouseX - xOffset_spring2;
-        s2y = mouseY - yOffset_spring2;
+        s2[0] = mouseX - xOffset_spring2;
+        s2[1] = mouseY - yOffset_spring2;
     }
 
     if (locked_spring1 || locked_spring2) {
-        a1x = 0;
-        a1y = 0;
-        a2x = 0;
-        a2y = 0;
+        a1 = [0, 0];
+        a2 = [0, 0];
     }
 }
 

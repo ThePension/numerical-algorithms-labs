@@ -6,25 +6,14 @@ function graph_clear() {
 }
 
 function simulation_reset() {
-    a1x = 0;
-    v1x = 0;
-    f1x = 0;
-    s1x = 0;
+    a1 = [0, 0];
+    a2 = [0, 0];
 
-    a1y = 0;
-    v1y = 0;
-    f1y = 0;
-    s1y = 100;
+    v1 = [0, 0];
+    v2 = [0, 0];
 
-    a2x = 0;
-    v2x = 0;
-    f2x = 0;
-    s2x = -70;
-
-    a2y = 0;
-    v2y = 0;
-    f2y = 0;
-    s2y = 90;
+    s1 = [0, 100];
+    s2 = [-70, 90];
 
     oldx = null;
     oldy = null;
@@ -43,7 +32,7 @@ function simulation_gravity() {
 }
 
 function simulation_damping() {
-    b = 3 * +(damping_input.value);
+    b = +(damping_input.value);
     damping_value.value = parseFloat(damping_input.value).toFixed(2).padStart(3, '0')
 }
 
@@ -76,6 +65,6 @@ function springs_mass2() {
 
         mass2_input.value = 1;
     }
-    
+
     m2 = +(mass2_input.value);
 }
