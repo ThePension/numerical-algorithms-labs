@@ -52,7 +52,6 @@ class DoublePendulum
 
     update()
     {
-        console.log(m2);
         let num1 = -g * (2 * m1 + m2) * sin(this.a1);
         let num2 = -m2 * g * sin(this.a1 - 2 * this.a2);
         let num3 = -2 * sin(this.a1 - this.a2) * m2;
