@@ -1,10 +1,3 @@
-function graph_clear() {
-    resetMatrix();
-    stroke(255);
-    fill(255);
-    rect(0, 0, width, height);
-}
-
 function simulation_pendulum_number()
 {
     pendulum_number_value.value = parseFloat(pendulum_number_input.value).toFixed(2).padStart(5, '0');
@@ -18,7 +11,7 @@ function simulation_reset() {
 
     for(let i = 0; i < pendulums_number; i++)
     {
-        pendulums.push(new DoublePendulum(i / 1000, color(map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255))));
+        pendulums.push(new DoublePendulum(i / 100000, color(map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255))));
     }
 }
 
@@ -30,27 +23,6 @@ function simulation_pause() {
 function simulation_gravity() {
     g = +(gravity_input.value);
     gravity_value.value = parseFloat(gravity_input.value).toFixed(2).padStart(5, '0');
-}
-
-function simulation_damping() {
-    b = +(damping_input.value);
-    damping_value.value = parseFloat(damping_input.value).toFixed(2).padStart(3, '0')
-}
-
-function springs_rest_length() {
-    if (+(rest_length_input.value) < 1) {
-        rest_length_input.value = 1;
-    }
-
-    R = +(rest_length_input.value);
-}
-
-function springs_constant() {
-    if (+(spring_constant_input.value) < 1) {
-        spring_constant_input.value = 1;
-    }
-
-    k = +(spring_constant_input.value);
 }
 
 function springs_mass1() {

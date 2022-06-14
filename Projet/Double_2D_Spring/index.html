@@ -4,23 +4,19 @@
 <head>
     <script src="p5.js"></script>
     <meta charset="utf-8">
-    <title>Projet - double ressort 2D</title>
+    <title>Projet - double pendulum 2D</title>
 </head>
 
 <body style="margin: 0;">
     <main style="scroll-snap-align: start;">
-        <h1 style="margin-top: 0;">Projet - double ressort 2D</h1>
+        <h1 style="margin-top: 0;">Projet - double pendulum 2D</h1>
         <hr style="scroll-snap-align: start;">
 
         <section>
-            <button id="graph_clear" onclick="graph_clear()">Chart clear</button>
-            <button id="graph_clear" onclick="simulation_reset()">reset</button>
-            <button id="sumulation_pause" onclick="simulation_pause()">pause</button>
-
             <label id="pendulum_number">
                 <label for="pendulum_number">Double pendulum number</label>
                 <output id="pendulum_number_value" for="pendulum_number_input">5</output>
-                <input id="pendulum_number_input" type="range" min="1" max="100" step="1" value="5"
+                <input id="pendulum_number_input" type="range" min="1" max="1000" step="1" value="5"
                     oninput="simulation_pendulum_number()">
             </label>
             <label id="gravity">
@@ -29,27 +25,13 @@
                 <input id="gravity_input" type="range" min="0" max="50" step="0.01" value="9.81"
                     oninput="simulation_gravity()">
             </label>
-            <label id="damping">
-                <label for="damping">Damping</label>
-                <output id="damping_value" for="damping_input">0.00</output>
-                <input id="damping_input" type="range" min="0" max="1" step="0.01" value="0"
-                    oninput="simulation_damping()">
-            </label>
-            <label id="rest_length">
-                <label for="rest_length_input">Rest Length</label>
-                <input id="rest_length_input" type="number" min="1" max="1000" value="100" onchange="springs_rest_length()">
-            </label>
-            <label id="spring_constant">
-                <label for="spring_constant_input">Spring constant</label>
-                <input id="spring_constant_input" type="number" min="1" max="50" value="5" onchange="springs_constant()">
-            </label>
             <label id="mass1">
                 <label for="mass1_input">Mass 1</label>
-                <input id="mass1_input" type="number" min="1" max="100" value="1" onchange="springs_mass1()">
+                <input id="mass1_input" type="number" min="1" max="100" value="10" onchange="springs_mass1()">
             </label>
             <label id="mass2">
                 <label for="mass2_input">Mass 2</label>
-                <input id="mass2_input" type="number" min="1" max="100" value="1" onchange="springs_mass2()">
+                <input id="mass2_input" type="number" min="1" max="100" value="10" onchange="springs_mass2()">
             </label>
         </section>
         <output id="sketch"></output>
@@ -68,9 +50,6 @@
     <script src="doublependulum.js"></script>
     <script src="sketch.js"></script>
     <script src="controls.js"></script>
-
-
-
 </body>
 
 </html>
