@@ -19,21 +19,12 @@ pendulums = [];
 
 let square_side = 20;
 
-// Mouse handling variables
-let over_spring1 = false;
-let over_spring2 = false;
-let locked_spring1 = false;
-let locked_spring2 = false;
-let xOffset_spring1 = 0.0;
-let yOffset_spring1 = 0.0;
-let xOffset_spring2 = 0.0;
-let yOffset_spring2 = 0.0;
-
 /* ==================================================== *\
 |*                        SETUP                         *|
 \* ==================================================== */
 
-function setup() {
+function setup()
+{
     for(let i = 0; i < pendulums_number; i++)
     {
         pendulums.push(new DoublePendulum(i / 100000, color(map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255), map(i, 0, pendulums_number, 0, 255))));
@@ -48,7 +39,8 @@ function setup() {
 |*                       DRAW 60 Hz                     *|
 \* ==================================================== */
 
-function draw() {
+function draw()
+{
     background(130, 130, 250);
     strokeWeight(2);
     stroke(0);
