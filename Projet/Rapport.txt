@@ -31,9 +31,9 @@ Pour ce qui est des calculs, nous avons commencé par déterminé les équations
 Ensuite, nous avons dérivé l'équation de la position pour obtenir la vitesse et dans un second temps l'accélération.
 Ces équations ne prennent en compte que les angles des tiges avec la vertical et la longueur des tiges.
 
-Par la suite, nous avons cherché les équations différentielles qui lient l'accélération du premier pendule à celle du deuxième.
+Par la suite, nous avons cherché les équations différentielles du mouvement qui lient l'accélération du premier pendule à celle du deuxième.
 Après cela, il a fallu simplifier ces équations afin d'obtenir une verision numérique et implémentable.
-Pour cela, nous avons utilisé la méthode de Runge-Kutta.
+Pour aproximer ces équations, nous avons utilisé la méthode de Runge-Kutta.
 
 Une fois les équations simplifiées il ne nous manquait plus qu'à implémenter une version JS à l'aide de p5.js.
 Afin de visualiser au mieux l'aspect chaotique, nous affichons une multitude de pendule avec un décalage angulaire initial qui n'est pas visible par l'utilisateur.
@@ -41,9 +41,9 @@ Afin de visualiser au mieux l'aspect chaotique, nous affichons une multitude de 
 
 Conclusion
 ==========
-Notre projet permet de simuler l'évolution, selon la méthode de Runge-Kutta, du comportement du double pendule.
+Notre projet permet de simuler l'évolution du double pendule en fonction du temps, en aproximant les équations du mouvement selon la méthode de Runge-Kutta.
 Après avoir lancé une multitude de pendules avec un décalage angulaire infime, nous obtenons, comme attendu, un résultat chaotique.
-En effet, malgré un décalage initial de quelques pixels, il ne faut qu'on court lapse de temps pour que les doubles pendules évoluent différemment les uns des autres.
+En effet, malgré un décalage initial de quelques pixels, il ne faut qu'un court lapse de temps pour que les doubles pendules évoluent différemment les uns des autres.
 
 
 Références
@@ -52,4 +52,5 @@ Références
 - https://p5js.org/examples/
 - https://thecodingtrain.com/CodingChallenges/160-spring-forces.html
 - https://www.myphysicslab.com/pendulum/double-pendulum-en.html
+- https://en.wikipedia.org/wiki/Equations_of_motion
 - https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
