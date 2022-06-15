@@ -52,3 +52,19 @@ function draw()
         pendulums[i].show();
     }
 }
+
+function mousePressed() 
+{
+    for(let i = 0; i < pendulums.length; i++)
+    {
+        pendulums[i].pressed();
+    }
+}
+
+function mouseReleased() 
+{
+    for(let i = 0; i < pendulums.length; i++)
+    {
+        pendulums[i].released();
+    }
+}

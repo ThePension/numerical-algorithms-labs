@@ -26,6 +26,13 @@ class DoublePendulum
 
         this.x2 = this.x1 + this.r2 * sin(this.a2);
         this.y2 = this.y1 + this.r2 * cos(this.a2);
+
+        this.isMoving = false;
+
+        this.dragging = false; // Is the object being dragged?
+
+        this.offsetA1 = 0;
+        this.offsetY = 0;
     }
 
     show()
@@ -52,22 +59,32 @@ class DoublePendulum
 
     update()
     {
-        let num1 = -g * (2 * m1 + m2) * sin(this.a1);
-        let num2 = -m2 * g * sin(this.a1 - 2 * this.a2);
-        let num3 = -2 * sin(this.a1 - this.a2) * m2;
-        let num4 = this.a2_v * this.a2_v * this.r2 + this.a1_v * this.a1_v * this.r1 * cos(this.a1 - this.a2);
-        let den = this.r1 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
-        this.a1_a = (num1 + num2 + num3 * num4) / den;
+        if (this.dragging)
+        {
+            let relativeMouseX = mouseX - width / 2;
+            let relativeMouseY = (height / 2) - mouseY;
+            this.offsetA1 = atan2(relativeMouseY, relativeMouseX) + PI/2
+            this.a1 = this.offsetA1;
+        }
+        else
+        {
+            let num1 = -g * (2 * m1 + m2) * sin(this.a1);
+            let num2 = -m2 * g * sin(this.a1 - 2 * this.a2);
+            let num3 = -2 * sin(this.a1 - this.a2) * m2;
+            let num4 = this.a2_v * this.a2_v * this.r2 + this.a1_v * this.a1_v * this.r1 * cos(this.a1 - this.a2);
+            let den = this.r1 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
+            this.a1_a = (num1 + num2 + num3 * num4) / den;
 
-        num1 = 2 * sin(this.a1 - this.a2);
-        num2 = (this.a1_v * this.a1_v * this.r1 * (m1 + m2));
-        num3 = g * (m1 + m2) * cos(this.a1);
-        num4 = this.a2_v * this.a2_v * this.r2 * m2 * cos(this.a1 - this.a2);
-        den = this.r2 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
-        this.a2_a = (num1 * (num2 + num3 + num4)) / den;
+            num1 = 2 * sin(this.a1 - this.a2);
+            num2 = (this.a1_v * this.a1_v * this.r1 * (m1 + m2));
+            num3 = g * (m1 + m2) * cos(this.a1);
+            num4 = this.a2_v * this.a2_v * this.r2 * m2 * cos(this.a1 - this.a2);
+            den = this.r2 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
+            this.a2_a = (num1 * (num2 + num3 + num4)) / den;
+        }
 
-        this.a1_v += this.a1_a / 15.0;
-        this.a2_v += this.a2_a / 15.0;
+        this.a1_v += this.a1_a / 60.0;
+        this.a2_v += this.a2_a / 60.0;
 
         this.a1 += this.a1_v;
         this.a2 += this.a2_v;
@@ -77,5 +94,34 @@ class DoublePendulum
 
         this.x2 = this.x1 + this.r2 * sin(this.a2);
         this.y2 = this.y1 + this.r2 * cos(this.a2);
+    }
+
+    pressed()
+    {
+        if (this.overMass1()) 
+        {
+            this.dragging = true;
+        }
+    }
+
+    released() 
+    {
+        // Quit dragging
+        this.dragging = false;
+    }
+
+    overMass1() 
+    {
+        let relativeMouseX = mouseX - width / 2;
+        let relativeMouseY = mouseY - height / 2;
+        // Is mouse over object
+        if (relativeMouseX > this.x1 && relativeMouseX < this.x1 + this.square_side && relativeMouseY > this.y1 && relativeMouseY < this.y1 + this.square_side)
+        {            
+            this.offsetA1 = atan(relativeMouseY / relativeMouseX);
+
+            return true;
+        }
+
+        return false;
     }
 }
