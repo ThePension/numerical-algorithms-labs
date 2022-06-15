@@ -35,8 +35,8 @@ class DoublePendulum
         this.offsetA1 = 0;
         this.offsetA2 = 0;
 
-        this.prevMouseX = 0;
-        this.prevMouseY = 0;
+        this.prevOffsetA1 = 0;
+        this.prevOffsetA2 = 0;
     }
 
     show()
@@ -70,7 +70,7 @@ class DoublePendulum
 
             this.a1_v += this.a1_a / 15.0;
             this.a2_v += this.a2_a / 15.0;
-    
+
             this.a1 += this.a1_v;
             this.a2 += this.a2_v;
         }
@@ -80,12 +80,11 @@ class DoublePendulum
             {
                 let relativeMouseX = mouseX - width / 2;
                 let relativeMouseY = (height / 2) - mouseY;
+
                 this.offsetA1 = atan2(relativeMouseY, relativeMouseX) + PI/2;
+
                 this.a1 = this.offsetA1;
-
                 this.a1_v = this.offsetA1 - this.prevOffsetA1;
-
-                this.computeAngularAccelerationForM2();
             }
             else if(this.dragging2)
             {
@@ -101,16 +100,20 @@ class DoublePendulum
                 this.a1_v = 0;
             }
 
+            // Get the previous angle
             this.prevOffsetA1 = this.offsetA1;
             this.prevOffsetA2 = this.offsetA2;
         }
 
+        // Update position of the first mass
         this.x1 = this.r1 * sin(this.a1);
         this.y1 = this.r1 * cos(this.a1);
 
+        // Update position of the second mass
         this.x2 = this.x1 + this.r2 * sin(this.a2);
         this.y2 = this.y1 + this.r2 * cos(this.a2);
 
+        // Apply damping
         this.a1_v *= 0.999;
         this.a2_v *= 0.999;
     }
@@ -127,14 +130,14 @@ class DoublePendulum
         }
     }
 
-    released() 
+    released()
     {
         // Quit dragging
         this.dragging1 = false;
         this.dragging2 = false;
     }
 
-    overMass1() 
+    overMass1()
     {
         let relativeMouseX = mouseX - width / 2;
         let relativeMouseY = mouseY - height / 2;
@@ -142,7 +145,7 @@ class DoublePendulum
         return relativeMouseX > this.x1 - this.square_side * 2 && relativeMouseX < this.x1 + this.square_side * 2 && relativeMouseY > this.y1 - this.square_side * 2 && relativeMouseY < this.y1 + this.square_side * 2;
     }
 
-    overMass2() 
+    overMass2()
     {
         let relativeMouseX = mouseX - width / 2;
         let relativeMouseY = mouseY - height / 2;
