@@ -29,10 +29,14 @@ class DoublePendulum
 
         this.isMoving = false;
 
-        this.dragging = false; // Is the object being dragged?
+        this.dragging1 = false; // Is the object being dragged?
+        this.dragging2 = false;
 
         this.offsetA1 = 0;
-        this.offsetY = 0;
+        this.offsetA2 = 0;
+
+        this.prevMouseX = 0;
+        this.prevMouseY = 0;
     }
 
     show()
@@ -59,55 +63,75 @@ class DoublePendulum
 
     update()
     {
-        if (this.dragging)
+        if (!this.dragging1 && !this.dragging2)
         {
-            let relativeMouseX = mouseX - width / 2;
-            let relativeMouseY = (height / 2) - mouseY;
-            this.offsetA1 = atan2(relativeMouseY, relativeMouseX) + PI/2
-            this.a1 = this.offsetA1;
+            this.computeAngularAccelerationForM1();
+            this.computeAngularAccelerationForM2();
+
+            this.a1_v += this.a1_a / 15.0;
+            this.a2_v += this.a2_a / 15.0;
+    
+            this.a1 += this.a1_v;
+            this.a2 += this.a2_v;
         }
         else
         {
-            let num1 = -g * (2 * m1 + m2) * sin(this.a1);
-            let num2 = -m2 * g * sin(this.a1 - 2 * this.a2);
-            let num3 = -2 * sin(this.a1 - this.a2) * m2;
-            let num4 = this.a2_v * this.a2_v * this.r2 + this.a1_v * this.a1_v * this.r1 * cos(this.a1 - this.a2);
-            let den = this.r1 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
-            this.a1_a = (num1 + num2 + num3 * num4) / den;
+            if(this.dragging1)
+            {
+                let relativeMouseX = mouseX - width / 2;
+                let relativeMouseY = (height / 2) - mouseY;
+                this.offsetA1 = atan2(relativeMouseY, relativeMouseX) + PI/2;
+                this.a1 = this.offsetA1;
 
-            num1 = 2 * sin(this.a1 - this.a2);
-            num2 = (this.a1_v * this.a1_v * this.r1 * (m1 + m2));
-            num3 = g * (m1 + m2) * cos(this.a1);
-            num4 = this.a2_v * this.a2_v * this.r2 * m2 * cos(this.a1 - this.a2);
-            den = this.r2 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
-            this.a2_a = (num1 * (num2 + num3 + num4)) / den;
+                this.a1_v = this.offsetA1 - this.prevOffsetA1;
+
+                this.computeAngularAccelerationForM2();
+            }
+            else if(this.dragging2)
+            {
+                let relativeMouseXForM2 = mouseX - (width / 2 + this.x1);
+                let relativeMouseYForM2 = (height / 2 + this.y1) - mouseY;
+
+                this.offsetA2 = -atan2(relativeMouseXForM2, relativeMouseYForM2) + PI;
+                this.a2 = this.offsetA2;
+
+                this.a2_v = this.offsetA2 - this.prevOffsetA2;
+
+                this.a2_a = 0;
+                this.a1_v = 0;
+            }
+
+            this.prevOffsetA1 = this.offsetA1;
+            this.prevOffsetA2 = this.offsetA2;
         }
-
-        this.a1_v += this.a1_a / 60.0;
-        this.a2_v += this.a2_a / 60.0;
-
-        this.a1 += this.a1_v;
-        this.a2 += this.a2_v;
 
         this.x1 = this.r1 * sin(this.a1);
         this.y1 = this.r1 * cos(this.a1);
 
         this.x2 = this.x1 + this.r2 * sin(this.a2);
         this.y2 = this.y1 + this.r2 * cos(this.a2);
+
+        this.a1_v *= 0.999;
+        this.a2_v *= 0.999;
     }
 
     pressed()
     {
-        if (this.overMass1()) 
+        if (this.overMass1())
         {
-            this.dragging = true;
+            this.dragging1 = true;
+        }
+        else if(this.overMass2())
+        {
+            this.dragging2 = true;
         }
     }
 
     released() 
     {
         // Quit dragging
-        this.dragging = false;
+        this.dragging1 = false;
+        this.dragging2 = false;
     }
 
     overMass1() 
@@ -115,13 +139,34 @@ class DoublePendulum
         let relativeMouseX = mouseX - width / 2;
         let relativeMouseY = mouseY - height / 2;
         // Is mouse over object
-        if (relativeMouseX > this.x1 && relativeMouseX < this.x1 + this.square_side && relativeMouseY > this.y1 && relativeMouseY < this.y1 + this.square_side)
-        {            
-            this.offsetA1 = atan(relativeMouseY / relativeMouseX);
+        return relativeMouseX > this.x1 - this.square_side * 2 && relativeMouseX < this.x1 + this.square_side * 2 && relativeMouseY > this.y1 - this.square_side * 2 && relativeMouseY < this.y1 + this.square_side * 2;
+    }
 
-            return true;
-        }
+    overMass2() 
+    {
+        let relativeMouseX = mouseX - width / 2;
+        let relativeMouseY = mouseY - height / 2;
+        // Is mouse over object
+        return relativeMouseX > this.x2 - this.square_side * 2 && relativeMouseX < this.x2 + this.square_side * 2 && relativeMouseY > this.y2 - this.square_side * 2 && relativeMouseY < this.y2 + this.square_side * 2;           
+    }
 
-        return false;
+    computeAngularAccelerationForM1()
+    {
+        let num1 = -g * (2 * m1 + m2) * sin(this.a1);
+        let num2 = -m2 * g * sin(this.a1 - 2 * this.a2);
+        let num3 = -2 * sin(this.a1 - this.a2) * m2;
+        let num4 = this.a2_v * this.a2_v * this.r2 + this.a1_v * this.a1_v * this.r1 * cos(this.a1 - this.a2);
+        let den = this.r1 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
+        this.a1_a = (num1 + num2 + num3 * num4) / den;
+    }
+
+    computeAngularAccelerationForM2()
+    {
+        let num1 = 2 * sin(this.a1 - this.a2);
+        let num2 = (this.a1_v * this.a1_v * this.r1 * (m1 + m2));
+        let num3 = g * (m1 + m2) * cos(this.a1);
+        let num4 = this.a2_v * this.a2_v * this.r2 * m2 * cos(this.a1 - this.a2);
+        let den = this.r2 * (2 * m1 + m2 - m2 * cos(2 * this.a1 - 2 * this.a2));
+        this.a2_a = (num1 * (num2 + num3 + num4)) / den;
     }
 }

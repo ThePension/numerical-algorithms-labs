@@ -43,6 +43,7 @@ function draw()
 {
     background(130, 130, 250);
     strokeWeight(2);
+    ellipse(0, 0, 30, 30);  
     stroke(0);
     fill(0);
 
