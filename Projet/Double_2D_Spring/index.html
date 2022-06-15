@@ -13,25 +13,32 @@
         <hr style="scroll-snap-align: start;">
 
         <section>
+            <!-- Input for the number of pendulums -->
             <label id="pendulum_number">
                 <label for="pendulum_number">Double pendulum number</label>
                 <output id="pendulum_number_value" for="pendulum_number_input">5</output>
                 <input id="pendulum_number_input" type="range" min="1" max="1000" step="1" value="5"
                     oninput="simulation_pendulum_number()">
             </label>
+
+            <!-- Input for the gravity value -->
             <label id="gravity">
                 <label for="gravity">Gravity</label>
                 <output id="gravity_value" for="gravity_input">9.81</output>
                 <input id="gravity_input" type="range" min="0" max="50" step="0.01" value="9.81"
                     oninput="simulation_gravity()">
             </label>
+
+            <!-- Input for the mass of the first ball -->
             <label id="mass1">
                 <label for="mass1_input">Mass 1</label>
-                <input id="mass1_input" type="number" min="1" max="100" value="10" onchange="springs_mass1()">
+                <input id="mass1_input" type="number" min="1" max="100" value="10" onchange="mass1()">
             </label>
+
+            <!-- Input for the mass of the second ball -->
             <label id="mass2">
                 <label for="mass2_input">Mass 2</label>
-                <input id="mass2_input" type="number" min="1" max="100" value="10" onchange="springs_mass2()">
+                <input id="mass2_input" type="number" min="1" max="100" value="10" onchange="mass2()">
             </label>
         </section>
         <output id="sketch"></output>
